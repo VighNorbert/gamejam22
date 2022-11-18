@@ -7,9 +7,11 @@ public class TileScript : MonoBehaviour
 {
     public bool hasEnemy = false;
     public bool hasDeadEnemy = false;
-    public bool hasFog = false;
+    private bool hasFog = false;
     public bool isFinishingTile;
     private Vector2Int coords;
+
+    public GameObject fog;
 
     public void SetCoords(int x, int z)
     {
@@ -21,9 +23,9 @@ public class TileScript : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetFog(bool fogState)
     {
-        
+        hasFog = fogState;
+        fog.SetActive(fogState);
     }
 }
