@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class GameScript : MonoBehaviour
 {
-    public static int WIDTH = 20;
-    public static int HEIGHT = 20;
+    public int width = 20;
+    public int height = 20;
     
     public GameObject tilePrefab;
-    // public int width;
-    // public int height;
+
+    public Transform tileParent;
+    
     public Camera camera;
 
     public List<List<TileScript>> tiles;
@@ -18,13 +20,13 @@ public class GameScript : MonoBehaviour
     void Start()
     {
         tiles = new List<List<TileScript>>();
-        for (int z = 0; z < HEIGHT; z++)
+        for (int z = 0; z < height; z++)
         {
             List<TileScript> row = new List<TileScript>();
             tiles.Add(row);
-            for (int x = 0; x < WIDTH; x++)
+            for (int x = 0; x < width; x++)
             {
-                TileScript tile = Instantiate(tilePrefab, new Vector3(x * 2 - WIDTH + 1, 0, z * 2 - HEIGHT + 1), Quaternion.identity).GetComponent<TileScript>();
+                TileScript tile = Instantiate(tilePrefab, new Vector3(x * 2 - width + 1, 0, z * 2 - height + 1), Quaternion.identity, tileParent).GetComponent<TileScript>();
                 tile.SetCoords(x, z);
                 row.Add(tile);
             } 
