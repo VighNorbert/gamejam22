@@ -28,4 +28,9 @@ public class TileScript : MonoBehaviour
         hasFog = fogState;
         fog.SetActive(fogState);
     }
+
+    public bool GetHasFog()
+    {
+        return hasFog;
+    }
 }

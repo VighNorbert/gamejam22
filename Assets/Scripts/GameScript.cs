@@ -6,16 +6,16 @@ using UnityEngine.Tilemaps;
 
 public class GameScript : MonoBehaviour
 {
-    public int width = 20;
-    public int height = 20;
+    public static int width = 20;
+    public static int height = 20;
     
     public GameObject tilePrefab;
 
     public Transform tileParent;
     
-    public Camera camera;
+    public Camera mainCamera;
 
-    public List<List<TileScript>> tiles;
+    public static List<List<TileScript>> tiles;
 
     void Start()
     {
