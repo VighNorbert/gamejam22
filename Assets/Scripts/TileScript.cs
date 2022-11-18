@@ -9,9 +9,21 @@ public class TileScript : MonoBehaviour
     public bool hasDeadEnemy = false;
     private bool hasFog = false;
     public bool isFinishingTile;
-    private Vector2Int coords;
+    public Vector2Int coords;
+
+    private Color basicColor = Color.black;
 
     public GameObject fog;
+
+    private Renderer renderer;
+
+    void Start()
+    {
+        renderer = GetComponent<Renderer>();
+        renderer.material.color = basicColor;
+        transform.tag = "Tile";
+    }
+
 
     public void SetCoords(int x, int z)
     {
@@ -27,5 +39,10 @@ public class TileScript : MonoBehaviour
     {
         hasFog = fogState;
         fog.SetActive(fogState);
+    }
+
+    private void OnMouseExit()
+    {
+        renderer.material.color = basicColor;
     }
 }

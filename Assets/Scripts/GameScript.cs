@@ -17,6 +17,8 @@ public class GameScript : MonoBehaviour
 
     public List<List<TileScript>> tiles;
 
+    public static int phase = 1;
+
     void Start()
     {
         tiles = new List<List<TileScript>>();
@@ -37,6 +39,16 @@ public class GameScript : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (phase < 5)
+            {
+                phase += 1;
+            }
+            else
+            {
+                phase = 1;
+            }
+        }
     }
 }
