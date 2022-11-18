@@ -41,6 +41,11 @@ public class TileScript : MonoBehaviour
         fog.SetActive(fogState);
     }
 
+    public bool GetHasFog()
+    {
+        return hasFog;
+    }
+
     private void OnMouseExit()
     {
         renderer.material.color = basicColor;
