@@ -71,10 +71,18 @@ public class GameScript : MonoBehaviour
     {
         if (Phase == 1)
         {
-            _currentLevel.GetCurrentWave().SpawnNextEnemies();
+            bool enemiesRemaining = _currentLevel.GetCurrentWave().SpawnNextEnemies();
             foreach (var enemy in enemiesAlive)
             {
                 enemy.ChooseNextMove();
+            }
+
+            if (!enemiesRemaining && enemiesAlive.Count == 0)
+            {
+                if (!_currentLevel.StartNextWave())
+                {
+                    // TODO level is finished, do something
+                }
             }
             
             Phase += 1;
@@ -127,13 +135,7 @@ public class GameScript : MonoBehaviour
         Phase += 1;
         pc.MarkFog();
         Phase += 1;
-        
-        // todo choose player movement and killing and stuff
-        // todo when complete set phase to 1
-        
+
         TileScript.AgeAllFogTiles();
-        
-        
-        // Phase = 1;
     }
 }
