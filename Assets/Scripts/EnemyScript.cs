@@ -36,7 +36,23 @@ public class EnemyScript : MonoBehaviour
         if (Random.Range(0f, 1f) <= randomness)
         {
             // random move
+            
+            Debug.Log("current at start " + position);
+            
             nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
+
+            int tries = 5;
+            while (!(IsInBounds(nextPosition.x, nextPosition.y) 
+                   || GameScript.tiles[nextPosition.y][nextPosition.x].GetHasFog()
+                   || GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy)
+                   && tries > 0
+                   )
+            {
+                tries--;
+                nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
+            }
+            Debug.Log("current " + position);
+            Debug.Log("next " + nextPosition);
             GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
             GameScript.tiles[position.y][position.x].hasEnemy = false;
             return;

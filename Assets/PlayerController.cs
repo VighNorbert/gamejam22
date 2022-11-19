@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     private Color color = Color.green;
     private int currShapeIndex = 0;
 
+    private ShapeController scToUse;
+    private Vector2Int currTileCoords;
+    
     public GameScript gs;
 
     public InventoryController ic;
@@ -95,19 +98,12 @@ public class PlayerController : MonoBehaviour
                         }
                         if (Input.GetMouseButtonDown(0) && color == Color.green)
                         {
-                            for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
-                            {
-                                int y = hit.transform.GetComponent<TileScript>().coords.y + currShape.GetComponent<ShapeController>().points[i].y;
-                                int x = hit.transform.GetComponent<TileScript>().coords.x + currShape.GetComponent<ShapeController>().points[i].x;
-                                if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
-                                {
-                                    break;
-                                }
-                                GameScript.tiles[y][x].GetComponent<TileScript>().SetFog(true);
+                            scToUse = currShape.GetComponent<ShapeController>();
+                            currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
 
 
-                            }
                             SwapShape();
+                            currShape = null;
                             GameScript.phase = 3;
                             gs.MoveEnemies();
                         }
@@ -117,6 +113,20 @@ public class PlayerController : MonoBehaviour
             }
            
         }   
+    }
+
+    public void MarkFog()
+    {
+        for (int i = 0; i < scToUse.points.Count; i++)
+        {
+            int y = currTileCoords.y + scToUse.points[i].y;
+            int x = currTileCoords.x + scToUse.points[i].x;
+            if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
+            {
+                break;
+            }
+            GameScript.tiles[y][x].GetComponent<TileScript>().SetFog(true);
+        }
     }
 
     public bool inBounds(int x, int y)

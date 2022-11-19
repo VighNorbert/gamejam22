@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.Tilemaps;
 
 public class GameScript : MonoBehaviour
 {
@@ -20,10 +18,10 @@ public class GameScript : MonoBehaviour
     public List<LevelScript> levels;
 
     private LevelScript currentLevel;
-    
-    private List<List<EnemyScript>> currentWave;
 
     public List<EnemyScript> enemiesAlive;
+
+    public PlayerController _pc;
 
     public GameObject kingPrefab;
     public GameObject knightPrefab;
@@ -53,6 +51,9 @@ public class GameScript : MonoBehaviour
         tiles[0][10].SetFog(true);
         
         // camera
+
+        currentLevel = levels[0];
+        currentLevel.StartFirstWave();
     }
 
     void Update()
@@ -78,6 +79,17 @@ public class GameScript : MonoBehaviour
         }
 
         phase += 1;
-        
+        _pc.MarkFog();
+        phase += 1;
+        // todo choose player movement and killing and stuff
+        phase = 1;
+        currentLevel.GetCurrentWave().SpawnNextEnemies();
+        foreach (var enemy in enemiesAlive)
+        {
+            enemy.ChooseNextMove();
+        }
+
+
+        phase += 1;
     }
 }

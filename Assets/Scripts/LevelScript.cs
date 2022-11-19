@@ -8,7 +8,7 @@ public class LevelScript : MonoBehaviour
 
     private int _currentWave = 0;
     
-    private void StartFirstWave()
+    public void StartFirstWave()
     {
         waves[_currentWave].StartWave();
     }

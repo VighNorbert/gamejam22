@@ -82,10 +82,11 @@ public class WaveScript : MonoBehaviour
                     default: prefab = gs.kingPrefab; break;
                 }
                 GameObject enemy = Instantiate(prefab,
-                    new Vector3(esp.XCoord * 2 - GameScript.width + 1, 0, GameScript.height + 1),
+                    new Vector3(esp.XCoord * 2 - GameScript.width + 1, 0.5f, GameScript.height - 1),
                     Quaternion.identity);
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
                 es.position = new Vector2Int(esp.XCoord, GameScript.height - 1);
+                Debug.Log("Spawned enemy at " + es.position);
                 gs.enemiesAlive.Add(es);
             }
             _enemyRowIndex++;
