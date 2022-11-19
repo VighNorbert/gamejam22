@@ -10,16 +10,19 @@ public class LevelScript : MonoBehaviour
     
     private void StartFirstWave()
     {
-        // waves[_currentWave].StartWave();
+        waves[_currentWave].StartWave();
     }
     
-    public void WaveFinished()
+    public bool WaveFinished()
     {
         _currentWave++;
         if (_currentWave < waves.Count)
         {
-            // waves[_currentWave].StartWave();
+            waves[_currentWave].StartWave();
+            return false;
         }
+
+        return true;
     }
     
     public WaveScript GetCurrentWave()
