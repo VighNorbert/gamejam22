@@ -52,4 +52,5 @@ MonoBehaviour:
   - {x: 0, y: -1}
   - {x: 0, y: -2}
   - {x: 0, y: -3}
-  image: {fileID: 21300000, guid: 395788d4db4c3154580ad612c5c19ac0, type: 3}
+  image: {fileID: 21300000, guid: d2e5e5cc33b89b44eb16c57c804d9816, type: 3}
+  index: 0

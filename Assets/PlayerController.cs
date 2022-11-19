@@ -8,13 +8,13 @@ public class PlayerController : MonoBehaviour
     public GameObject healthUI;
     [HideInInspector]
     public GameObject currShape;
-    private GameObject[] currTiles;
-    private Color color = Color.green;
-    private int currShapeIndex = 0;
+    private GameObject[] _currTiles;
+    private Color _color = Color.green;
+    private int _currShapeIndex = 0;
 
-    private List<Vector2Int> shapeToUse = new List<Vector2Int>();
+    private List<Vector2Int> _shapeToUse = new List<Vector2Int>();
 
-    private Vector2Int currTileCoords;
+    private Vector2Int _currTileCoords;
     
     public GameScript gs;
 
@@ -22,13 +22,13 @@ public class PlayerController : MonoBehaviour
 
     public int totalShapes;
 
-    private int xNegativeRotation = 1;
-    private int yNegativeRotation = 1;
-    private bool swap = false;
-    private int angle = 0;
+    private int _xFlip = 1;
+    private int _yFlip = 1;
+    private bool _swap = false;
+    private int _angle = 0;
 
-    public static int health = 5;
-    // Start is called before the first frame update
+    public static int Health = 5;
+    
     void Start()
     {
         totalShapes = transform.Find("Shapes").transform.childCount; 
@@ -38,43 +38,31 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (angle < 360)
-            {
-                angle = ((angle - 90) + 360) % 360;
-            }
-            else
-            {
-
-            angle = (angle - 90) % 360;
-            }
+            _angle = (_angle + 270) % 360;
             HandleAngles();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            angle = (angle + 90) % 360;
+            _angle = (_angle + 90) % 360;
             HandleAngles();
         }
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            Debug.Log(currShapeIndex);
+            Debug.Log(_currShapeIndex);
 
-            currShape = transform.Find("Shapes").transform.GetChild(currShapeIndex).gameObject;
-            if (currShapeIndex < totalShapes - 1)
+            currShape = transform.Find("Shapes").transform.GetChild(_currShapeIndex).gameObject;
+            if (_currShapeIndex < totalShapes - 1)
             {
-                currShapeIndex += 1;
+                _currShapeIndex += 1;
             }
             else
             {
-                currShapeIndex = 0;
+                _currShapeIndex = 0;
             }
         }
-        /*if (currShape)
-        {
-            Debug.Log(currShape.name);
-
-        }*/
+        
         if (GameScript.phase == 2)
         {
             if (currShape)
@@ -85,90 +73,46 @@ public class PlayerController : MonoBehaviour
                 Physics.Raycast(ray, out hit);
                 if (hit.transform != null)
                 {
-                    if (hit.transform.tag == "Tile")
+                    if (hit.transform.CompareTag("Tile"))
                     {
+                        ShapeController sc = currShape.GetComponent<ShapeController>();
                         hit.transform.GetComponent<Renderer>().material.color = Color.red;
-                        for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
-                        {
-                            int pointsY = currShape.GetComponent<ShapeController>().points[i].y;
-                            int pointsX = currShape.GetComponent<ShapeController>().points[i].x;
+                        _color = isNeigbouring(sc, hit) ? Color.green : Color.red;
 
-                            if (swap)
+                        Debug.Log("new");
+                        
+                        foreach (var p in sc.points)
+                        {
+                            int pointsY = p.y;
+                            int pointsX = p.x;
+
+                            Debug.Log("a, x " + p.x + " y " + p.y);
+                            
+                            if (_swap)
                             {
-                                int swap;
-                                swap = pointsX;
-                                pointsX = pointsY;
-                                pointsY = swap;
+                                (pointsX, pointsY) = (pointsY, pointsX);
                             }
 
-                            pointsX = xNegativeRotation * pointsX;
-                            pointsY = yNegativeRotation * pointsY;
-
+                            pointsX = _xFlip * pointsX;
+                            pointsY = _yFlip * pointsY;
 
                             int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
                             int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
-
-                            if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
+                            
+                            if (sc.points.Count > _shapeToUse.Count)
                             {
-                                contine;
-                            }
-                            if ((inBounds(y + 1, x) && GameScript.tiles[y + 1][x].GetHasFog()) ||
-                                (inBounds(y - 1, x) && GameScript.tiles[y - 1][x].GetHasFog()) ||
-                                (inBounds(y, x + 1) && GameScript.tiles[y][x + 1].GetHasFog()) ||
-                                (inBounds(y, x - 1) && GameScript.tiles[y][x - 1].GetHasFog()))
-                            {
-                                color = Color.green;
-                                break;
-                            }
-                            else
-                            {
-                                color = Color.red;
+                                _shapeToUse.Add(new Vector2Int(pointsX, pointsY));
                             }
                             
-
-
+                            if (x < GameScript.width && y < GameScript.height && x >= 0 && y >= 0)
+                            {
+                                GameScript.tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
+                            }
                         }
                         
-                        for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
+                        if (Input.GetMouseButtonDown(0) && _color == Color.green)
                         {
-
-
-                            int pointsY = currShape.GetComponent<ShapeController>().points[i].y;
-                            int pointsX = currShape.GetComponent<ShapeController>().points[i].x;
-
-                            if (swap)
-                            {
-                                int swap;
-                                swap = pointsX;
-                                pointsX = pointsY;
-                                pointsY = swap;
-                            }
-
-                            pointsX = xNegativeRotation * pointsX;
-                            pointsY = yNegativeRotation * pointsY;
-
-
-                            int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
-                            int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
-
-
-                            if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
-                            {
-                                continue;
-                            }
-                            GameScript.tiles[y][x].transform.GetComponent<Renderer>().material.color = color;
-                            
-                            if (currShape.GetComponent<ShapeController>().points.Count > shapeToUse.Count)
-                            {
-
-                            shapeToUse.Add(new Vector2Int(pointsX, pointsY));
-                            }
-
-                        }
-                        
-                        if (Input.GetMouseButtonDown(0) && color == Color.green)
-                        {
-                            currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
+                            _currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
                             
                             SwapShape();
                             
@@ -184,27 +128,60 @@ public class PlayerController : MonoBehaviour
         }   
     }
 
+    private bool isNeigbouring(ShapeController sc, RaycastHit hit)
+    {
+        foreach (var p in sc.points)
+        {
+            int pointsY = p.y;
+            int pointsX = p.x;
+
+            if (_swap)
+            {
+                (pointsX, pointsY) = (pointsY, pointsX);
+            }
+
+            pointsX = _xFlip * pointsX;
+            pointsY = _yFlip * pointsY;
+                            
+            int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
+            int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
+
+            if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
+            {
+                continue;
+            }
+            if ((InBounds(y + 1, x) && GameScript.tiles[y + 1][x].GetHasFog()) ||
+                (InBounds(y - 1, x) && GameScript.tiles[y - 1][x].GetHasFog()) ||
+                (InBounds(y, x + 1) && GameScript.tiles[y][x + 1].GetHasFog()) ||
+                (InBounds(y, x - 1) && GameScript.tiles[y][x - 1].GetHasFog()))
+            {
+                _color = Color.green;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void MarkFog()
     {
-        Debug.Log(shapeToUse.Count);
-        for (int i = 0; i < shapeToUse.Count; i++)
+        Debug.Log(_shapeToUse.Count);
+        for (int i = 0; i < _shapeToUse.Count; i++)
         {
-            int y = currTileCoords.y + shapeToUse[i].y;
-            int x = currTileCoords.x + shapeToUse[i].x;
-            Debug.Log(shapeToUse[i].y);
-            Debug.Log(shapeToUse[i].x);
+            int y = _currTileCoords.y + _shapeToUse[i].y;
+            int x = _currTileCoords.x + _shapeToUse[i].x;
+            Debug.Log("x " + _shapeToUse[i].x + " y " + _shapeToUse[i].y);
             if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
             {
                 continue;
             }
             GameScript.tiles[y][x].GetComponent<TileScript>().SetFog(true);
         }
-        shapeToUse.Clear();
+        _shapeToUse.Clear();
     }
 
-    public bool inBounds(int x, int y)
+    public static bool InBounds(int x, int y)
     {
-        /*return !(GameScript.width < x && GameScript.height < y && 0 >= x && 0 >= y);*/
         return (x >= 0 && y >= 0 && x < GameScript.width && y < GameScript.height);
     }
 
@@ -226,43 +203,42 @@ public class PlayerController : MonoBehaviour
 
     public void HandleAngles()
     {
-        shapeToUse.Clear();
-        if (angle == 0)
+        _shapeToUse.Clear();
+        if (_angle == 0)
         {
-            xNegativeRotation = 1;
-            yNegativeRotation = 1;
-            swap = false;
+            _xFlip = 1;
+            _yFlip = 1;
+            _swap = false;
         }
-        else if (angle == 90)
+        else if (_angle == 90)
         {
-            xNegativeRotation = 1;
-            yNegativeRotation = -1;
-            swap = true;
-
+            _xFlip = 1;
+            _yFlip = -1;
+            _swap = true;
         }
-        else if (angle == 180)
+        else if (_angle == 180)
         {
-            xNegativeRotation = -1;
-            yNegativeRotation = -1;
-            swap = false;
+            _xFlip = -1;
+            _yFlip = -1;
+            _swap = false;
         }
-        else if (angle == 270)
+        else if (_angle == 270)
         {
-            xNegativeRotation = -1;
-            yNegativeRotation = 1;
-            swap = true;
+            _xFlip = -1;
+            _yFlip = 1;
+            _swap = true;
         }
     }
 
     public static int GetHealth()
     {
-        return health;
+        return Health;
     }
 
     public static void HealthDown()
     {
-        health -= 1;
-        if (health <= 0)
+        Health -= 1;
+        if (Health <= 0)
         {
             Debug.Log("Game Over");
         }

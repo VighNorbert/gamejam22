@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   points:
   - {x: 0, y: 0}
-  - {x: 0, y: 1}
   - {x: 0, y: -1}
-  - {x: 0, y: 2}
-  image: {fileID: 21300000, guid: bb54d6623bca563498a8f748214a643f, type: 3}
+  - {x: -1, y: 0}
+  - {x: 0, y: -2}
+  - {x: -2, y: 0}
+  image: {fileID: 21300000, guid: 50875459be8e8e946ba1754e8bc0d8b4, type: 3}
+  index: 0
