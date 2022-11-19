@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,12 +24,39 @@ public class EnemyScript : MonoBehaviour
 
     public List<Vector2Int> possibleMoves;
 
-    public GameObject gs;
+    public GameScript gs;
+
+    private bool _moving = false;
+    private float _timeElapsed = 0f;
+    public float movementDuration = 3f;
+    
+    private Vector3 _worldPosition;
+    private Vector3 _nextWorldPosition;
 
     void Start()
     {
         randomness = Random.Range(0f, 0.3f);
         personality = Random.Range(0f, 1f);
+    }
+
+    void Update()
+    {
+        if (_moving)
+        {
+            if (_timeElapsed < movementDuration)
+            {
+                transform.position = Vector3.Lerp(_worldPosition, _nextWorldPosition, _timeElapsed / movementDuration);
+                _timeElapsed += Time.deltaTime;
+            }
+            else
+            {
+                _worldPosition = _nextWorldPosition;
+                transform.position = _worldPosition;
+                _timeElapsed = 0f;
+                _moving = false;
+                gs.enemiesMoved++;
+            }
+        }
     }
 
     public void ChooseNextMove()
@@ -53,6 +81,7 @@ public class EnemyScript : MonoBehaviour
                 tries--;
                 nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
             }
+            
             GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
             GameScript.Tiles[nextPosition.y][nextPosition.x].enemy = gameObject;
             GameScript.Tiles[position.y][position.x].hasEnemy = false;
@@ -84,13 +113,15 @@ public class EnemyScript : MonoBehaviour
 
     public void Move()
     {
+        _worldPosition = new Vector3(position.x * 2f - GameScript.Width + 1, 0.5f, position.y * 2f - GameScript.Height + 1);
+        _nextWorldPosition = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
+        _moving = true;
         position = nextPosition;
         if (nextPosition.y * 2f - GameScript.Height + 1 == -19)
         {
             PlayerController.HealthDown();
             GameScript.RemoveEnemy(this.gameObject);
         }
-        transform.position = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
     }
 
     private float EvaluateMove(Vector2Int move)
