@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class WaveScript : MonoBehaviour
 {
@@ -81,9 +82,13 @@ public class WaveScript : MonoBehaviour
                     case EnemyScript.EnemyType.Superman: prefab = gs.supermanPrefab; break;
                     default: prefab = gs.kingPrefab; break;
                 }
+                Debug.Log(esp.XCoord);
+                GameScript.Tiles[19][esp.XCoord].hasEnemy = true;
+                GameScript.Tiles[19][esp.XCoord].GetComponentInParent<Renderer>().material.color = Color.red;
                 GameObject enemy = Instantiate(prefab,
-                    new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0f, GameScript.Height - 1),
-                    Quaternion.AngleAxis(180f, Vector3.up));
+                    new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),
+                    Quaternion.identity);
+                GameScript.Tiles[19][esp.XCoord].enemy = enemy;
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
                 es.gs = gs;
                 es.position = new Vector2Int(esp.XCoord, GameScript.Height - 1);
