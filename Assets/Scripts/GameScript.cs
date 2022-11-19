@@ -17,6 +17,21 @@ public class GameScript : MonoBehaviour
 
     public static List<List<TileScript>> tiles;
 
+    public List<LevelScript> levels;
+
+    private LevelScript currentLevel;
+    
+    private List<List<EnemyScript>> currentWave;
+
+    public List<EnemyScript> enemiesAlive;
+
+    public GameObject kingPrefab;
+    public GameObject knightPrefab;
+    public GameObject rookPrefab;
+    public GameObject bishopPrefab;
+    public GameObject supermanPrefab;
+
+
     public static int phase = 1;
 
     void Start()
