@@ -84,8 +84,7 @@ public class EnemyScript : MonoBehaviour
         if (nextPosition.y * 2f - GameScript.Height + 1 == -19)
         {
             PlayerController.HealthDown();
-            //gs.GetComponent<GameScript>().RemoveEnemy(this.gameObject);
-            Destroy(this.gameObject);
+            GameScript.RemoveEnemy(this.gameObject);
         }
         transform.position = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
     }

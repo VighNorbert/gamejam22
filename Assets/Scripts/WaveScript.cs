@@ -87,7 +87,7 @@ public class WaveScript : MonoBehaviour
                     Quaternion.identity);
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
                 es.position = new Vector2Int(esp.XCoord, GameScript.Height - 1);
-                gs.enemiesAlive.Add(es);
+                GameScript.enemiesAlive.Add(es);
             }
             _enemyRowIndex++;
             return true;

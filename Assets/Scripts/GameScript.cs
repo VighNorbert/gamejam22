@@ -17,7 +17,9 @@ public class GameScript : MonoBehaviour
 
     private LevelScript _currentLevel;
 
-    public List<EnemyScript> enemiesAlive;
+    public static List<EnemyScript> enemiesAlive = new List<EnemyScript>();
+
+    public static List<EnemyScript> enemiesToBeRemoved = new List<EnemyScript>();
 
     public PlayerController pc;
 
@@ -80,9 +82,10 @@ public class GameScript : MonoBehaviour
         HandleCamera();
     }
 
-    public void RemoveEnemy(GameObject enemy)
+    public static void RemoveEnemy(GameObject enemy)
     {
-        enemiesAlive.Remove(enemy.GetComponent<EnemyScript>());
+        enemiesToBeRemoved.Add(enemy.GetComponent<EnemyScript>());
+        enemy.SetActive(false);
     }
 
     private void HandleCamera()
@@ -105,10 +108,20 @@ public class GameScript : MonoBehaviour
 
     public void MoveEnemies()
     {
+        enemiesToBeRemoved = new List<EnemyScript>();
+        
         foreach (EnemyScript enemy in enemiesAlive)
         { 
             enemy.Move();
         }
+
+        foreach (EnemyScript enemy in enemiesToBeRemoved)
+        {
+            enemiesAlive.Remove(enemy);
+            Destroy(enemy);
+        }
+        enemiesToBeRemoved.Clear();
+
 
         Phase += 1;
         pc.MarkFog();
