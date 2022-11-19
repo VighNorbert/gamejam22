@@ -173,6 +173,14 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
             GameScript.Tiles[y][x].hasPlayer = true;
             _playerTileCoords = new Vector2Int(x, y);
+            if (GameScript.Tiles[y][x].hasEnemy)
+            {
+                GameScript.Tiles[y][x].hasDeadEnemy = true;
+                GameScript.Tiles[y][x].hasEnemy = false;
+                GameScript.enemiesAlive.Remove(GameScript.Tiles[y][x].enemy.GetComponent<EnemyScript>());
+                Destroy(GameScript.Tiles[y][x].enemy);
+                GameScript.Tiles[y][x].enemy = null;
+            }
             GameScript.Phase = 1;
         }
     }

@@ -14,6 +14,9 @@ public class TileScript : MonoBehaviour
 
     public GameObject fog;
 
+    [HideInInspector] 
+    public GameObject enemy;
+
     private Renderer _renderer;
 
     void Start()

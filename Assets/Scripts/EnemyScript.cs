@@ -54,7 +54,9 @@ public class EnemyScript : MonoBehaviour
                 nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
             }
             GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+            GameScript.Tiles[nextPosition.y][nextPosition.x].enemy = gameObject;
             GameScript.Tiles[position.y][position.x].hasEnemy = false;
+            GameScript.Tiles[position.y][position.x].enemy = null;
             return;
         }
         
@@ -75,7 +77,9 @@ public class EnemyScript : MonoBehaviour
         
         nextPosition = position + possibleMoves[bestMoveIndex];
         GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+        GameScript.Tiles[nextPosition.y][nextPosition.x].enemy = gameObject;
         GameScript.Tiles[position.y][position.x].hasEnemy = false;
+        GameScript.Tiles[position.y][position.x].enemy = null;
     }
 
     public void Move()
