@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TileScript : MonoBehaviour
@@ -9,6 +11,10 @@ public class TileScript : MonoBehaviour
     public bool isFinishingTile;
     public Vector2Int coords;
 
+    public bool isFogConnectedToPlayer;
+    public TileScript cameFrom;
+    public int pathCost;
+    
     private Color _basicColor;
     private Color _fogColor;
 
@@ -102,7 +108,23 @@ public class TileScript : MonoBehaviour
             foreach (var t in tile)
             {
                 t.AgeTheFog();
+                t.isFogConnectedToPlayer = false;
+                t.cameFrom = null;
+                t.pathCost = Int32.MaxValue;
             }
+        }
+        VisitTile(PlayerController.PlayerTileCoords.x, PlayerController.PlayerTileCoords.y);
+    }
+
+    public static void VisitTile(int x, int y)
+    {
+        TileScript ts = GameScript.Tiles[y][x];
+        if (ts.isFogConnectedToPlayer == false && ts.GetHasFog()) {
+            ts.isFogConnectedToPlayer = true;
+            if (x > 0) VisitTile(x - 1, y);
+            if (x < GameScript.Width - 1) VisitTile(x + 1, y);
+            if (y > 0) VisitTile(x, y - 1);
+            if (y < GameScript.Height - 1) VisitTile(x, y + 1);
         }
     }
 }

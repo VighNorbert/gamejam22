@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private readonly List<Vector2Int> _shapeToUse = new();
 
     private Vector2Int _currTileCoords;
-    private Vector2Int _playerTileCoords;
+    public static Vector2Int PlayerTileCoords;
     
     public GameScript gs;
 
@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
     public void SpawnPlayer(int x, int y)
     {
         transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
-        _playerTileCoords = new Vector2Int(x, y);
+        PlayerTileCoords = new Vector2Int(x, y);
     }
 
     private void HandlePhaseTwo()
@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePhaseFive()
     {
-        GameScript.Tiles[_playerTileCoords.y][_playerTileCoords.x].hasPlayer = false;
+        GameScript.Tiles[PlayerTileCoords.y][PlayerTileCoords.x].hasPlayer = false;
         Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
         int x = -1, y = -1;
         // Casts the ray and get the first game object hit
@@ -153,11 +153,21 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.transform.CompareTag("Tile"))
             {
-                y = hit.transform.GetComponent<TileScript>().coords.y;
-                x = hit.transform.GetComponent<TileScript>().coords.x;
-                if (hit.transform.GetComponent<TileScript>().GetHasFog())
+                TileScript ts = hit.transform.GetComponent<TileScript>();
+                
+                y = ts.coords.y;
+                x = ts.coords.x;
+                if (ts.GetHasFog())
                 {
-                    _color = Color.green;
+                    if (ts.isFogConnectedToPlayer)
+                    {
+                        _color = Color.green;
+                    }
+                    else
+                    {
+                        _color = Color.red;
+                    }
+
                     GameScript.Tiles[y][x].fog.transform.GetComponent<Renderer>().material.color = _color;
                 }
                 else
@@ -170,24 +180,52 @@ public class PlayerController : MonoBehaviour
             {
                 EnemyScript es = hit.transform.GetComponent<EnemyScript>();
                 (x, y) = (es.position.x, es.position.y);
-                if (GameScript.Tiles[y][x].GetHasFog())
+                TileScript ts = GameScript.Tiles[y][x];
+                if (ts.GetHasFog())
                 {
-                    _color = Color.green;
-                    GameScript.Tiles[y][x].fog.transform.GetComponent<Renderer>().material.color = _color;
+                    if (ts.isFogConnectedToPlayer)
+                    {
+                        _color = Color.green;
+                    }
+                    else
+                    {
+                        _color = Color.red;
+                    }
+                    ts.fog.transform.GetComponent<Renderer>().material.color = _color;
                 }
                 else
                 {
                     _color = Color.red;
-                    GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
+                    ts.transform.GetComponent<Renderer>().material.color = _color;
                 }
             }
         }
 
         if (Input.GetMouseButtonDown(0) && x >= 0 && y >= 0 && _color == Color.green)
         {
+            FindPath(PlayerTileCoords.x, PlayerTileCoords.y, null, 0);
+            TileScript tsDest = GameScript.Tiles[y][x];
+            TileScript ts = tsDest;
+            TileScript tsNew;
+            TileScript tsPrev = null;
+            while (ts != null)
+            {
+                tsNew = ts.cameFrom;
+                ts.cameFrom = tsPrev;
+                tsPrev = ts;
+                ts = tsNew;
+            }
+
+            ts = tsPrev;
+            while (ts != null)
+            {
+                Debug.Log(ts.coords);
+                ts = ts.cameFrom;
+            }
+            
             transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
             GameScript.Tiles[y][x].hasPlayer = true;
-            _playerTileCoords = new Vector2Int(x, y);
+            PlayerTileCoords = new Vector2Int(x, y);
             if (GameScript.Tiles[y][x].hasEnemy)
             {
                 GameScript.Tiles[y][x].hasDeadEnemy = true;
@@ -198,6 +236,21 @@ public class PlayerController : MonoBehaviour
             }
             GameScript.Phase = 1;
         }
+    }
+
+    private void FindPath(int x, int y, TileScript cameFrom, int distance)
+    {
+        TileScript tile = GameScript.Tiles[y][x];
+        if (tile.pathCost <= distance || tile.isFogConnectedToPlayer == false)
+        {
+            return;
+        }
+        tile.pathCost = distance;
+        tile.cameFrom = cameFrom;
+        if (x > 0) { FindPath(x - 1, y, tile, distance + 1); }
+        if (x < GameScript.Width - 1) { FindPath(x + 1, y, tile, distance + 1); }
+        if (y > 0) { FindPath(x, y - 1, tile, distance + 1); }
+        if (y < GameScript.Height - 1) { FindPath(x, y + 1, tile, distance + 1); }
     }
 
     private bool IsNeighbouring(ShapeController sc, RaycastHit hit)
