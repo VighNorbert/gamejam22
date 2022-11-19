@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+
+    public GameObject healthUI;
     [HideInInspector]
     public GameObject currShape;
     private GameObject[] currTiles;
     private Color color = Color.green;
     private int currShapeIndex = 0;
+
+
 
     private ShapeController scToUse;
     private Vector2Int currTileCoords;
@@ -18,6 +22,13 @@ public class PlayerController : MonoBehaviour
     public InventoryController ic;
 
     public int totalShapes;
+
+    private int xNegativeRotation = 1;
+    private int yNegativeRotation = 1;
+    private bool swap = false;
+    private int angle = 0;
+
+    public static int health = 5;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +37,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            angle = (angle - 90) % 360;
+            HandleAngles();
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            angle = (angle + 90) % 360;
+            HandleAngles();
+        }
+
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Debug.Log(currShapeIndex);
@@ -86,8 +109,20 @@ public class PlayerController : MonoBehaviour
 
                         for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
                         {
+                            
                             int y = hit.transform.GetComponent<TileScript>().coords.y + currShape.GetComponent<ShapeController>().points[i].y;
                             int x = hit.transform.GetComponent<TileScript>().coords.x + currShape.GetComponent<ShapeController>().points[i].x;
+
+                            if (swap)
+                            {
+                                SwapXY(x,y);
+                            }
+
+                            x = xNegativeRotation * x;
+                            y = yNegativeRotation * y;
+
+                            swap = false;
+
                             if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
                             {
                                 break;
@@ -148,5 +183,54 @@ public class PlayerController : MonoBehaviour
         }
 
         ic.UpdateInventory();
+    }
+
+    public void SwapXY(int x, int y)
+    {
+        int swap;
+        swap = x;
+        x = y;
+        y = swap;
+    }
+
+    public void HandleAngles()
+    {
+        if (angle == 0)
+        {
+            xNegativeRotation = 1;
+            yNegativeRotation = 1;
+        }
+        else if (angle == 90)
+        {
+            xNegativeRotation = -1;
+            yNegativeRotation = 1;
+            swap = true;
+
+        }
+        else if (angle == 180)
+        {
+            xNegativeRotation = -1;
+            yNegativeRotation = -1;
+        }
+        else if (angle == 270)
+        {
+            xNegativeRotation = 1;
+            yNegativeRotation = -1;
+            swap = true;
+        }
+    }
+
+    public static int GetHealth()
+    {
+        return health;
+    }
+
+    public static void HealthDown()
+    {
+        health -= 1;
+        if (health <= 0)
+        {
+            Debug.Log("Game Over");
+        }
     }
 }
