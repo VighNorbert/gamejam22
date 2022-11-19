@@ -1,27 +1,26 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameScript : MonoBehaviour
 {
-    public static int width = 20;
-    public static int height = 20;
-    
+    public const int Width = 20;
+    public const int Height = 20;
+
     public GameObject tilePrefab;
 
     public Transform tileParent;
     
     public Camera mainCamera;
 
-    public static List<List<TileScript>> tiles;
+    public static List<List<TileScript>> Tiles;
 
     public List<LevelScript> levels;
 
-    private LevelScript currentLevel;
+    private LevelScript _currentLevel;
 
     public List<EnemyScript> enemiesAlive;
 
-    public PlayerController _pc;
+    public PlayerController pc;
 
     public GameObject kingPrefab;
     public GameObject knightPrefab;
@@ -30,42 +29,40 @@ public class GameScript : MonoBehaviour
     public GameObject supermanPrefab;
 
 
-    public static int phase = 2;
+    public static int Phase = 2;
 
     void Start()
     {
-        tiles = new List<List<TileScript>>();
-        for (int z = 0; z < height; z++)
+        Tiles = new List<List<TileScript>>();
+        for (int z = 0; z < Height; z++)
         {
             List<TileScript> row = new List<TileScript>();
-            tiles.Add(row);
-            for (int x = 0; x < width; x++)
+            Tiles.Add(row);
+            for (int x = 0; x < Width; x++)
             {
-                TileScript tile = Instantiate(tilePrefab, new Vector3(x * 2 - width + 1, 0, z * 2 - height + 1), Quaternion.identity, tileParent).GetComponent<TileScript>();
+                TileScript tile = Instantiate(tilePrefab, new Vector3(x * 2 - Width + 1, 0, z * 2 - Height + 1), Quaternion.identity, tileParent).GetComponent<TileScript>();
                 tile.SetCoords(x, z);
                 row.Add(tile);
             } 
         }
 
-        tiles[0][10].SetFog(true);
+        Tiles[0][10].SetFog(true);
         
-        // camera
-
-        currentLevel = levels[0];
-        currentLevel.StartFirstWave();
+        _currentLevel = levels[0];
+        _currentLevel.StartFirstWave();
     }
 
     void Update()
     {
-        if (phase == 1)
+        if (Phase == 1)
         {
-            currentLevel.GetCurrentWave().SpawnNextEnemies();
+            _currentLevel.GetCurrentWave().SpawnNextEnemies();
             foreach (var enemy in enemiesAlive)
             {
                 enemy.ChooseNextMove();
             }
             
-            phase += 1;
+            Phase += 1;
         }
     }
 
@@ -76,12 +73,12 @@ public class GameScript : MonoBehaviour
             enemy.Move();
         }
 
-        phase += 1;
-        _pc.MarkFog();
-        phase += 1;
+        Phase += 1;
+        pc.MarkFog();
+        Phase += 1;
         
         // todo choose player movement and killing and stuff
         // todo when complete set phase to 1
-        phase = 1;
+        Phase = 1;
     }
 }

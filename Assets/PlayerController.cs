@@ -1,18 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
-    public GameObject healthUI;
     [HideInInspector]
     public GameObject currShape;
     private GameObject[] _currTiles;
     private Color _color = Color.green;
-    private int _currShapeIndex = 0;
+    private int _currShapeIndex;
 
-    private List<Vector2Int> _shapeToUse = new List<Vector2Int>();
+    private readonly List<Vector2Int> _shapeToUse = new();
 
     private Vector2Int _currTileCoords;
     
@@ -24,11 +21,16 @@ public class PlayerController : MonoBehaviour
 
     private int _xFlip = 1;
     private int _yFlip = 1;
-    private bool _swap = false;
-    private int _angle = 0;
+    private bool _swap;
+    private int _angle;
 
-    public static int Health = 5;
-    
+    private static int _health = 5;
+
+    public PlayerController()
+    {
+        _angle = 0;
+    }
+
     void Start()
     {
         totalShapes = transform.Find("Shapes").transform.childCount; 
@@ -50,8 +52,6 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            Debug.Log(_currShapeIndex);
-
             currShape = transform.Find("Shapes").transform.GetChild(_currShapeIndex).gameObject;
             if (_currShapeIndex < totalShapes - 1)
             {
@@ -63,31 +63,26 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (GameScript.phase == 2)
+        if (GameScript.Phase == 2)
         {
             if (currShape)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
+                Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
                 // Casts the ray and get the first game object hit
-                Physics.Raycast(ray, out hit);
+                Physics.Raycast(ray, out var hit);
                 if (hit.transform != null)
                 {
                     if (hit.transform.CompareTag("Tile"))
                     {
                         ShapeController sc = currShape.GetComponent<ShapeController>();
                         hit.transform.GetComponent<Renderer>().material.color = Color.red;
-                        _color = isNeigbouring(sc, hit) ? Color.green : Color.red;
+                        _color = IsNeighbouring(sc, hit) ? Color.green : Color.red;
 
-                        Debug.Log("new");
-                        
                         foreach (var p in sc.points)
                         {
                             int pointsY = p.y;
                             int pointsX = p.x;
 
-                            Debug.Log("a, x " + p.x + " y " + p.y);
-                            
                             if (_swap)
                             {
                                 (pointsX, pointsY) = (pointsY, pointsX);
@@ -104,9 +99,9 @@ public class PlayerController : MonoBehaviour
                                 _shapeToUse.Add(new Vector2Int(pointsX, pointsY));
                             }
                             
-                            if (x < GameScript.width && y < GameScript.height && x >= 0 && y >= 0)
+                            if (x < GameScript.Width && y < GameScript.Height && x >= 0 && y >= 0)
                             {
-                                GameScript.tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
+                                GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
                             }
                         }
                         
@@ -117,7 +112,7 @@ public class PlayerController : MonoBehaviour
                             SwapShape();
                             
                             currShape = null;
-                            GameScript.phase = 3;
+                            GameScript.Phase = 3;
                             gs.MoveEnemies();
                         }
 
@@ -128,7 +123,7 @@ public class PlayerController : MonoBehaviour
         }   
     }
 
-    private bool isNeigbouring(ShapeController sc, RaycastHit hit)
+    private bool IsNeighbouring(ShapeController sc, RaycastHit hit)
     {
         foreach (var p in sc.points)
         {
@@ -146,14 +141,14 @@ public class PlayerController : MonoBehaviour
             int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
             int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
 
-            if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
+            if (GameScript.Width <= x || GameScript.Height <= y || 0 > x || 0 > y)
             {
                 continue;
             }
-            if ((InBounds(y + 1, x) && GameScript.tiles[y + 1][x].GetHasFog()) ||
-                (InBounds(y - 1, x) && GameScript.tiles[y - 1][x].GetHasFog()) ||
-                (InBounds(y, x + 1) && GameScript.tiles[y][x + 1].GetHasFog()) ||
-                (InBounds(y, x - 1) && GameScript.tiles[y][x - 1].GetHasFog()))
+            if ((InBounds(y + 1, x) && GameScript.Tiles[y + 1][x].GetHasFog()) ||
+                (InBounds(y - 1, x) && GameScript.Tiles[y - 1][x].GetHasFog()) ||
+                (InBounds(y, x + 1) && GameScript.Tiles[y][x + 1].GetHasFog()) ||
+                (InBounds(y, x - 1) && GameScript.Tiles[y][x - 1].GetHasFog()))
             {
                 _color = Color.green;
                 return true;
@@ -165,27 +160,26 @@ public class PlayerController : MonoBehaviour
 
     public void MarkFog()
     {
-        Debug.Log(_shapeToUse.Count);
-        for (int i = 0; i < _shapeToUse.Count; i++)
+        foreach (var shapePoint in _shapeToUse)
         {
-            int y = _currTileCoords.y + _shapeToUse[i].y;
-            int x = _currTileCoords.x + _shapeToUse[i].x;
-            Debug.Log("x " + _shapeToUse[i].x + " y " + _shapeToUse[i].y);
-            if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
+            int y = _currTileCoords.y + shapePoint.y;
+            int x = _currTileCoords.x + shapePoint.x;
+            if (GameScript.Width <= x || GameScript.Height <= y || 0 > x || 0 > y)
             {
                 continue;
             }
-            GameScript.tiles[y][x].GetComponent<TileScript>().SetFog(true);
+            GameScript.Tiles[y][x].GetComponent<TileScript>().SetFog(true);
         }
+
         _shapeToUse.Clear();
     }
 
-    public static bool InBounds(int x, int y)
+    private static bool InBounds(int x, int y)
     {
-        return (x >= 0 && y >= 0 && x < GameScript.width && y < GameScript.height);
+        return (x >= 0 && y >= 0 && x < GameScript.Width && y < GameScript.Height);
     }
 
-    public void SwapShape()
+    private void SwapShape()
     {
         int randInt = Random.Range(3, totalShapes);
         int sibIndex = transform.Find("Shapes").transform.GetChild(randInt).gameObject.transform.GetSiblingIndex();
@@ -201,7 +195,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void HandleAngles()
+    private void HandleAngles()
     {
         _shapeToUse.Clear();
         if (_angle == 0)
@@ -232,13 +226,13 @@ public class PlayerController : MonoBehaviour
 
     public static int GetHealth()
     {
-        return Health;
+        return _health;
     }
 
     public static void HealthDown()
     {
-        Health -= 1;
-        if (Health <= 0)
+        _health -= 1;
+        if (_health <= 0)
         {
             Debug.Log("Game Over");
         }

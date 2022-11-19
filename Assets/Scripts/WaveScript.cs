@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,17 +5,17 @@ public class WaveScript : MonoBehaviour
 {
     private readonly List<List<EnemySpawnPoint>> _enemies = new();
     
-    private int _enemyRowIndex = 0;
+    private int _enemyRowIndex;
     
     public GameScript gs;
 
     [Space(10)]
     
-    public int kingCount = 0;
-    public int knightCount = 0;
-    public int rookCount = 0;
-    public int bishopCount = 0;
-    public int supermanCount = 0;
+    public int kingCount;
+    public int knightCount;
+    public int rookCount;
+    public int bishopCount;
+    public int supermanCount;
 
     [Space(10)]
     
@@ -42,7 +41,7 @@ public class WaveScript : MonoBehaviour
         while (count > 0)
         {
             int row = Random.Range(0, rowsCount);
-            int col = Random.Range(0, GameScript.width);
+            int col = Random.Range(0, GameScript.Width);
             bool found = false;
             foreach (var esp in _enemies[row])
             {
@@ -55,9 +54,11 @@ public class WaveScript : MonoBehaviour
 
             if (!found)
             {
-                EnemySpawnPoint esp = new EnemySpawnPoint();
-                esp.Type = type;
-                esp.XCoord = col;
+                EnemySpawnPoint esp = new EnemySpawnPoint
+                {
+                    Type = type,
+                    XCoord = col
+                };
                 _enemies[row].Add(esp);
                 count--;
             }
@@ -82,11 +83,10 @@ public class WaveScript : MonoBehaviour
                     default: prefab = gs.kingPrefab; break;
                 }
                 GameObject enemy = Instantiate(prefab,
-                    new Vector3(esp.XCoord * 2 - GameScript.width + 1, 0.5f, GameScript.height - 1),
+                    new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),
                     Quaternion.identity);
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
-                es.position = new Vector2Int(esp.XCoord, GameScript.height - 1);
-                Debug.Log("Spawned enemy at " + es.position);
+                es.position = new Vector2Int(esp.XCoord, GameScript.Height - 1);
                 gs.enemiesAlive.Add(es);
             }
             _enemyRowIndex++;

@@ -1,26 +1,23 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TileScript : MonoBehaviour
 {
-    public bool hasEnemy = false;
-    public bool hasDeadEnemy = false;
-    private bool hasFog = false;
+    public bool hasEnemy;
+    public bool hasDeadEnemy;
+    private bool _hasFog;
     public bool isFinishingTile;
     public Vector2Int coords;
 
-    private Color basicColor = Color.black;
+    private readonly Color _basicColor = Color.black;
 
     public GameObject fog;
 
-    private Renderer renderer;
+    private Renderer _renderer;
 
     void Start()
     {
-        renderer = GetComponent<Renderer>();
-        renderer.material.color = basicColor;
+        _renderer = GetComponent<Renderer>();
+        _renderer.material.color = _basicColor;
         transform.tag = "Tile";
     }
 
@@ -37,24 +34,24 @@ public class TileScript : MonoBehaviour
 
     public void SetFog(bool fogState)
     {
-        hasFog = fogState;
+        _hasFog = fogState;
         fog.SetActive(fogState);
     }
 
     public bool GetHasFog()
     {
-        return hasFog;
+        return _hasFog;
     }
 
     private void OnMouseExit()
     {
-        for (int x = 0; x < GameScript.width; x++)
+        for (int x = 0; x < GameScript.Width; x++)
         {
-            for (int y = 0; y < GameScript.height; y++)
+            for (int y = 0; y < GameScript.Height; y++)
             {
-                GameScript.tiles[y][x].GetComponent<Renderer>().material.color = GameScript.tiles[y][x].basicColor;
+                GameScript.Tiles[y][x].GetComponent<Renderer>().material.color = GameScript.Tiles[y][x]._basicColor;
             }
         }
-        renderer.material.color = basicColor;
+        _renderer.material.color = _basicColor;
     }
 }

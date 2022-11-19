@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -37,24 +35,20 @@ public class EnemyScript : MonoBehaviour
         {
             // random move
             
-            Debug.Log("current at start " + position);
-            
             nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
 
             int tries = 5;
             while (!(IsInBounds(nextPosition.x, nextPosition.y) 
-                   || GameScript.tiles[nextPosition.y][nextPosition.x].GetHasFog()
-                   || GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy)
+                   || GameScript.Tiles[nextPosition.y][nextPosition.x].GetHasFog()
+                   || GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy)
                    && tries > 0
                    )
             {
                 tries--;
                 nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
             }
-            Debug.Log("current " + position);
-            Debug.Log("next " + nextPosition);
-            GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
-            GameScript.tiles[position.y][position.x].hasEnemy = false;
+            GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+            GameScript.Tiles[position.y][position.x].hasEnemy = false;
             return;
         }
         
@@ -73,19 +67,15 @@ public class EnemyScript : MonoBehaviour
             }
         }
         
-        // if (bestMoveIndex == -1)
-        // {
-        //     Debug.Log("no best Score found " + bestMoveIndex);   
-        // }
         nextPosition = position + possibleMoves[bestMoveIndex];
-        GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
-        GameScript.tiles[position.y][position.x].hasEnemy = false;
+        GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+        GameScript.Tiles[position.y][position.x].hasEnemy = false;
     }
 
     public void Move()
     {
         position = nextPosition;
-        transform.position = new Vector3(nextPosition.x * 2f - GameScript.width + 1, 0.5f, nextPosition.y * 2f - GameScript.height + 1);
+        transform.position = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
     }
 
     private float EvaluateMove(Vector2Int move)
@@ -96,11 +86,11 @@ public class EnemyScript : MonoBehaviour
         {
             return -2f;
         }
-        if (GameScript.tiles[newPosition.y][newPosition.x].GetHasFog())
+        if (GameScript.Tiles[newPosition.y][newPosition.x].GetHasFog())
         {
             return 0f;
         }
-        if (GameScript.tiles[newPosition.y][newPosition.x].hasEnemy)
+        if (GameScript.Tiles[newPosition.y][newPosition.x].hasEnemy)
         {
             return -1f;
         }
@@ -111,10 +101,10 @@ public class EnemyScript : MonoBehaviour
         {
             for (int i = -layer; i < layer; i++)
             {
-                if ((IsInBounds(newPosition.x + i, newPosition.y + layer) && GameScript.tiles[newPosition.y + layer][newPosition.x + i].GetHasFog())
-                 || (IsInBounds(newPosition.x + i, newPosition.y - layer) && GameScript.tiles[newPosition.y - layer][newPosition.x + i].GetHasFog())
-                 || (IsInBounds(newPosition.x + layer, newPosition.y + i) && GameScript.tiles[newPosition.y + i][newPosition.x + layer].GetHasFog())
-                 || (IsInBounds(newPosition.x - layer, newPosition.y + i) && GameScript.tiles[newPosition.y + i][newPosition.x - layer].GetHasFog()))
+                if ((IsInBounds(newPosition.x + i, newPosition.y + layer) && GameScript.Tiles[newPosition.y + layer][newPosition.x + i].GetHasFog())
+                 || (IsInBounds(newPosition.x + i, newPosition.y - layer) && GameScript.Tiles[newPosition.y - layer][newPosition.x + i].GetHasFog())
+                 || (IsInBounds(newPosition.x + layer, newPosition.y + i) && GameScript.Tiles[newPosition.y + i][newPosition.x + layer].GetHasFog())
+                 || (IsInBounds(newPosition.x - layer, newPosition.y + i) && GameScript.Tiles[newPosition.y + i][newPosition.x - layer].GetHasFog()))
                 {
                     float actDist = Mathf.Sqrt((i ^ 2) + (layer ^ 2));
                     if (actDist < fogDistance)
@@ -126,7 +116,7 @@ public class EnemyScript : MonoBehaviour
             layer++;
         }
 
-        float baseDistance = GameScript.height - newPosition.y;
+        float baseDistance = GameScript.Height - newPosition.y;
 
         float alteredPersonality = personality + baseDistance * 0.01f;
         if (alteredPersonality > 1f)
@@ -138,8 +128,8 @@ public class EnemyScript : MonoBehaviour
 
     }
     
-    private bool IsInBounds(int x, int y)
+    private static bool IsInBounds(int x, int y)
     {
-        return x >= 0 && x < GameScript.width && y >= 0 && y < GameScript.height;
+        return x is >= 0 and < GameScript.Width && y is >= 0 and < GameScript.Height;
     }
 }
