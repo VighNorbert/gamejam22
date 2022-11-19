@@ -72,6 +72,11 @@ public class EnemyScript : MonoBehaviour
                 bestMoveIndex = possibleMoves.IndexOf(move);
             }
         }
+        
+        // if (bestMoveIndex == -1)
+        // {
+        //     Debug.Log("no best Score found " + bestMoveIndex);   
+        // }
         nextPosition = position + possibleMoves[bestMoveIndex];
         GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
         GameScript.tiles[position.y][position.x].hasEnemy = false;
@@ -111,7 +116,7 @@ public class EnemyScript : MonoBehaviour
                  || (IsInBounds(newPosition.x + layer, newPosition.y + i) && GameScript.tiles[newPosition.y + i][newPosition.x + layer].GetHasFog())
                  || (IsInBounds(newPosition.x - layer, newPosition.y + i) && GameScript.tiles[newPosition.y + i][newPosition.x - layer].GetHasFog()))
                 {
-                    float actDist = Mathf.Sqrt(i ^ 2 + layer ^ 2);
+                    float actDist = Mathf.Sqrt((i ^ 2) + (layer ^ 2));
                     if (actDist < fogDistance)
                     {
                         fogDistance = actDist;

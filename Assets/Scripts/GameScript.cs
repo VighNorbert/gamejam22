@@ -34,7 +34,6 @@ public class GameScript : MonoBehaviour
 
     void Start()
     {
-
         tiles = new List<List<TileScript>>();
         for (int z = 0; z < height; z++)
         {
@@ -65,7 +64,7 @@ public class GameScript : MonoBehaviour
             {
                 enemy.ChooseNextMove();
             }
-
+            
             phase += 1;
         }
     }
@@ -73,7 +72,7 @@ public class GameScript : MonoBehaviour
     public void MoveEnemies()
     {
         foreach (EnemyScript enemy in enemiesAlive)
-        {
+        { 
             enemy.Move();
         }
 

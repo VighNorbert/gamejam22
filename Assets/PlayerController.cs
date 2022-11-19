@@ -105,8 +105,7 @@ public class PlayerController : MonoBehaviour
 
 
                         }
-
-
+                        
                         for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
                         {
                             
@@ -135,8 +134,7 @@ public class PlayerController : MonoBehaviour
                         {
                             scToUse = currShape.GetComponent<ShapeController>();
                             currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
-
-
+                            
                             SwapShape();
                             currShape = null;
                             GameScript.phase = 3;
