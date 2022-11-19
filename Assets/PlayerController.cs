@@ -8,15 +8,31 @@ public class PlayerController : MonoBehaviour
     public GameObject currShape;
     private GameObject[] currTiles;
     private Color color = Color.green;
+    private int currShapeIndex = 0;
+    public int totalShapes;
     // Start is called before the first frame update
     void Start()
     {
-        
+        totalShapes = transform.Find("Shapes").transform.childCount; 
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log(currShapeIndex);
+
+            currShape = transform.Find("Shapes").transform.GetChild(currShapeIndex).gameObject;
+            if (currShapeIndex < totalShapes - 1)
+            {
+                currShapeIndex += 1;
+            }
+            else
+            {
+                currShapeIndex = 0;
+            }
+        }
         /*if (currShape)
         {
             Debug.Log(currShape.name);
@@ -32,7 +48,6 @@ public class PlayerController : MonoBehaviour
                 Physics.Raycast(ray, out hit);
                 if (hit.transform != null)
                 {
-                    Debug.Log(hit.transform.name);
                     if (hit.transform.tag == "Tile")
                     {
                         hit.transform.GetComponent<Renderer>().material.color = Color.red;
@@ -94,14 +109,25 @@ public class PlayerController : MonoBehaviour
                 }
             }
            
-        }
-        
-        
+        }   
     }
 
     public bool inBounds(int x, int y)
     {
         /*return !(GameScript.width < x && GameScript.height < y && 0 >= x && 0 >= y);*/
         return (x >= 0 && y >= 0 && x < GameScript.width && y < GameScript.height);
+    }
+
+    public void SwapShape()
+    {
+        int randInt = Random.Range(0, totalShapes);
+        int sibIndex = transform.Find("Shapes").transform.GetChild(randInt).gameObject.transform.GetSiblingIndex();
+        transform.Find("Shapes").transform.GetChild(randInt).gameObject.transform.SetSiblingIndex(currShape.GetComponent<ShapeController>().index);
+        currShape.transform.SetSiblingIndex(sibIndex);
+
+        for (int i=0; i<totalShapes; i++)
+        {
+            transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().index = transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().transform.GetSiblingIndex()
+        }
     }
 }
