@@ -17,6 +17,7 @@ public class LevelScript : MonoBehaviour
         _currentWave++;
         if (_currentWave < waves.Count)
         {
+            Debug.Log("Starting wave " + (_currentWave + 1));
             waves[_currentWave].StartWave();
             return true;
         }

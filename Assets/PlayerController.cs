@@ -166,9 +166,24 @@ public class PlayerController : MonoBehaviour
                     GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
                 }
             }
+            else if (hit.transform.CompareTag("Enemy"))
+            {
+                EnemyScript es = hit.transform.GetComponent<EnemyScript>();
+                (x, y) = (es.position.x, es.position.y);
+                if (GameScript.Tiles[y][x].GetHasFog())
+                {
+                    _color = Color.green;
+                    GameScript.Tiles[y][x].fog.transform.GetComponent<Renderer>().material.color = _color;
+                }
+                else
+                {
+                    _color = Color.red;
+                    GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
+                }
+            }
         }
 
-        if (Input.GetMouseButtonDown(0) && _color == Color.green)
+        if (Input.GetMouseButtonDown(0) && x >= 0 && y >= 0 && _color == Color.green)
         {
             transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
             GameScript.Tiles[y][x].hasPlayer = true;

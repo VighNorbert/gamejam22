@@ -33,7 +33,8 @@ public class WaveScript : MonoBehaviour
         InitiateEnemyClass(rookCount, EnemyScript.EnemyType.Rook);
         InitiateEnemyClass(bishopCount, EnemyScript.EnemyType.Bishop);
         InitiateEnemyClass(supermanCount, EnemyScript.EnemyType.Superman);
-        
+
+        Debug.Log("Instantiated");
     }
     
     private void InitiateEnemyClass(int count, EnemyScript.EnemyType type)
@@ -70,6 +71,7 @@ public class WaveScript : MonoBehaviour
     {
         if (_enemyRowIndex < _enemies.Count)
         {
+            Debug.Log("Spawning enemies");
             foreach (EnemySpawnPoint esp in _enemies[_enemyRowIndex])
             {
                 GameObject prefab;

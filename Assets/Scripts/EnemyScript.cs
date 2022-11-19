@@ -33,6 +33,12 @@ public class EnemyScript : MonoBehaviour
 
     public void ChooseNextMove()
     {
+        if (GameScript.Tiles[position.y][position.x].GetHasFog())
+        {
+            nextPosition = position;
+            return;
+        }
+        
         if (Random.Range(0f, 1f) <= randomness)
         {
             // random move

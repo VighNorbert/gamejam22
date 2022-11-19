@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 2672602650574885518}
   - component: {fileID: 3558399338963909262}
   - component: {fileID: 4263763811921557603}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Superman
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

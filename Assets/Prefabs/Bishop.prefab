@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 6521610623176109739}
   - component: {fileID: 1291379511944114841}
   - component: {fileID: 6729761824542488913}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Bishop
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

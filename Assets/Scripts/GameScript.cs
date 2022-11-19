@@ -81,6 +81,7 @@ public class GameScript : MonoBehaviour
             {
                 if (!_currentLevel.StartNextWave())
                 {
+                    Debug.Log("Level Complete");
                     // TODO level is finished, do something
                 }
             }
