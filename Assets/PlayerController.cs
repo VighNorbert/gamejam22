@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 
     public GameScript gs;
 
+    public InventoryController ic;
+
     public int totalShapes;
     // Start is called before the first frame update
     void Start()
@@ -105,6 +107,7 @@ public class PlayerController : MonoBehaviour
 
 
                             }
+                            SwapShape();
                             GameScript.phase = 3;
                             gs.MoveEnemies();
                         }
@@ -124,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
     public void SwapShape()
     {
-        int randInt = Random.Range(0, totalShapes);
+        int randInt = Random.Range(3, totalShapes);
         int sibIndex = transform.Find("Shapes").transform.GetChild(randInt).gameObject.transform.GetSiblingIndex();
         transform.Find("Shapes").transform.GetChild(randInt).gameObject.transform.SetSiblingIndex(currShape.GetComponent<ShapeController>().index);
         currShape.transform.SetSiblingIndex(sibIndex);
@@ -133,5 +136,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().index = transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().transform.GetSiblingIndex();
         }
+
+        ic.UpdateInventory();
     }
 }

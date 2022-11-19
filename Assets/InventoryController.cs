@@ -20,4 +20,13 @@ public class InventoryController : MonoBehaviour
         player.GetComponent<PlayerController>().currShape = player.transform.Find("Shapes").transform.GetChild(shape).gameObject;
     }
 
+
+    public void UpdateInventory()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            this.transform.GetChild(0).transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = player.transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().image;
+        }
+    }
+
 }
