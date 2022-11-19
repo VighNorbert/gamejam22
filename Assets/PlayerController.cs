@@ -8,13 +8,9 @@ public class PlayerController : MonoBehaviour
     public GameObject currShape;
     private GameObject[] currTiles;
     private Color color = Color.green;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
+    public GameScript gs;
 
-    // Update is called once per frame
     void Update()
     {
         /*if (currShape)
@@ -88,6 +84,8 @@ public class PlayerController : MonoBehaviour
 
 
                             }
+                            GameScript.phase = 3;
+                            // todo run movement of enemies
                         }
 
                     }
