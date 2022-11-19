@@ -77,6 +77,7 @@ public class GameScript : MonoBehaviour
         if (Phase == 1)
         {
             bool enemiesRemaining = _currentLevel.GetCurrentWave().SpawnNextEnemies();
+
             foreach (var enemy in enemiesAlive)
             {
                 enemy.ChooseNextMove();
