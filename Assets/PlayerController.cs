@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
 
     private static bool InBounds(int x, int y)
     {
-        return (x >= 0 && y >= 0 && x < GameScript.Width && y < GameScript.Height);
+        return x >= 0 && y >= 0 && x < GameScript.Width && y < GameScript.Height;
     }
 
     private void SwapShape()
@@ -222,6 +222,8 @@ public class PlayerController : MonoBehaviour
             _yFlip = 1;
             _swap = true;
         }
+        
+        TileScript.ResetAllColors();
     }
 
     public static int GetHealth()

@@ -8,7 +8,7 @@ public class TileScript : MonoBehaviour
     public bool isFinishingTile;
     public Vector2Int coords;
 
-    private readonly Color _basicColor = Color.black;
+    private Color _basicColor;
 
     public GameObject fog;
 
@@ -16,20 +16,24 @@ public class TileScript : MonoBehaviour
 
     void Start()
     {
-        _renderer = GetComponent<Renderer>();
-        _renderer.material.color = _basicColor;
         transform.tag = "Tile";
     }
 
 
     public void SetCoords(int x, int z)
     {
-        coords = new Vector2Int(x, z);
-        if (z == 0)
+        if ((x + z) % 2 == 0)
         {
-            isFinishingTile = true;
-            GetComponent<MeshRenderer>().material.color = Color.red;
+            _basicColor = new Color {r = 0f, g = 0.4f, b = 0f};
         }
+        else
+        {
+            _basicColor = new Color {r = 0f, g = 0.5f, b = 0f};
+        }
+        _renderer = GetComponent<Renderer>();
+        _renderer.material.color = _basicColor;
+        
+        coords = new Vector2Int(x, z);
     }
 
     public void SetFog(bool fogState)
@@ -45,13 +49,22 @@ public class TileScript : MonoBehaviour
 
     private void OnMouseExit()
     {
-        for (int x = 0; x < GameScript.Width; x++)
+        ResetAllColors();
+    }
+
+    public static void ResetAllColors()
+    {
+        foreach (var tile in GameScript.Tiles)
         {
-            for (int y = 0; y < GameScript.Height; y++)
+            foreach (var t in tile)
             {
-                GameScript.Tiles[y][x].GetComponent<Renderer>().material.color = GameScript.Tiles[y][x]._basicColor;
+                t.ResetColor();
             }
         }
+    }
+
+    public void ResetColor()
+    {
         _renderer.material.color = _basicColor;
     }
 }
