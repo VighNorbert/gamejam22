@@ -48,6 +48,13 @@ public class TileScript : MonoBehaviour
 
     private void OnMouseExit()
     {
+        for (int x = 0; x < GameScript.width; x++)
+        {
+            for (int y = 0; y < GameScript.height; y++)
+            {
+                GameScript.tiles[y][x].GetComponent<Renderer>().material.color = GameScript.tiles[y][x].basicColor;
+            }
+        }
         renderer.material.color = basicColor;
     }
 }

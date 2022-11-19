@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShapeController : MonoBehaviour
 {
-    public List<Vector2> points;
+    public List<Vector2Int> points;
     public Sprite image;
     // Start is called before the first frame update
     void Start()
