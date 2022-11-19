@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -39,6 +41,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject infoText;
 
+    private Animator _animator;
+
     public PlayerController()
     {
         _angle = 0;
@@ -47,7 +51,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         healthUI = _healthUI;
-        totalShapes = transform.Find("Shapes").transform.childCount; 
+        totalShapes = transform.Find("Shapes").transform.childCount;
+        _animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -86,12 +91,19 @@ public class PlayerController : MonoBehaviour
             HandlePhaseFive();
         }
 
+        _animator.SetFloat("runSpeed", 0f);
         if (_playerMoving)
         {
             Vector3 worldPosition = new Vector3(pathToTake[currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, pathToTake[currPlayerMovementTile].y * 2f - GameScript.Height + 1);
             Vector3 nextWorldPosition =
                 new Vector3(pathToTake[currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
                     pathToTake[currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
+            transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
+            float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
+            Debug.Log(speed);
+            
+            _animator.SetFloat("runSpeed", speed / 10f);
+            
             if (_timeElapsed < _movementDuration)
             {
                 transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
