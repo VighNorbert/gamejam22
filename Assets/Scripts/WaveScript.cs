@@ -82,8 +82,8 @@ public class WaveScript : MonoBehaviour
                     default: prefab = gs.kingPrefab; break;
                 }
                 GameObject enemy = Instantiate(prefab,
-                    new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),
-                    Quaternion.identity);
+                    new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0f, GameScript.Height - 1),
+                    Quaternion.AngleAxis(180f, Vector3.up));
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
                 es.gs = gs;
                 es.position = new Vector2Int(esp.XCoord, GameScript.Height - 1);

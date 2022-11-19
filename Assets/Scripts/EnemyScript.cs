@@ -35,18 +35,25 @@ public class EnemyScript : MonoBehaviour
     private Vector3 _worldPosition;
     private Vector3 _nextWorldPosition;
 
+    private Animator _animator;
+
     void Start()
     {
         randomness = Random.Range(0f, 0.3f);
         personality = Random.Range(0f, 1f);
+
+        _animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
+        _animator.SetFloat("runSpeed", 0f);
         if (_moving)
         {
             if (_timeElapsed < _movementDuration)
             {
+                _animator.SetFloat("runSpeed", movementSpeed / 1.5f);
+                transform.rotation = Quaternion.LookRotation(_nextWorldPosition - _worldPosition);
                 transform.position = Vector3.Lerp(_worldPosition, _nextWorldPosition, _timeElapsed / _movementDuration);
                 _timeElapsed += Time.deltaTime;
             }
@@ -121,8 +128,8 @@ public class EnemyScript : MonoBehaviour
 
     public void Move()
     {
-        _worldPosition = new Vector3(position.x * 2f - GameScript.Width + 1, 0.5f, position.y * 2f - GameScript.Height + 1);
-        _nextWorldPosition = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
+        _worldPosition = new Vector3(position.x * 2f - GameScript.Width + 1, 0f, position.y * 2f - GameScript.Height + 1);
+        _nextWorldPosition = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0f, nextPosition.y * 2f - GameScript.Height + 1);
         _moving = true;
         _movementDuration = Vector3.Distance(_worldPosition, _nextWorldPosition) / movementSpeed;
         position = nextPosition;

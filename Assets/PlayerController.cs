@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -33,11 +35,16 @@ public class PlayerController : MonoBehaviour
 
     private float _timeElapsed = 0f;
     private float _movementDuration = 0.2f;
-    private List<Vector2Int> pathToTake = new();
+    private List<Vector2Int> _pathToTake = new();
     private bool _playerMoving = false;
-    private int currPlayerMovementTile = 0;
+    private int _currPlayerMovementTile = 0;
+    
+    private int _score = 0;
+    private bool _hasSpecialAbility = false;
 
     public GameObject infoText;
+
+    private Animator _animator;
 
     public PlayerController()
     {
@@ -47,7 +54,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         healthUI = _healthUI;
-        totalShapes = transform.Find("Shapes").transform.childCount; 
+        totalShapes = transform.Find("Shapes").transform.childCount;
+        _animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -86,12 +94,19 @@ public class PlayerController : MonoBehaviour
             HandlePhaseFive();
         }
 
+        _animator.SetFloat("runSpeed", 0f);
         if (_playerMoving)
         {
-            Vector3 worldPosition = new Vector3(pathToTake[currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, pathToTake[currPlayerMovementTile].y * 2f - GameScript.Height + 1);
+            Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
             Vector3 nextWorldPosition =
-                new Vector3(pathToTake[currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
-                    pathToTake[currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
+                new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0f,
+                    _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
+            transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
+            float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
+            Debug.Log(speed);
+            
+            _animator.SetFloat("runSpeed", speed / 10f);
+
             if (_timeElapsed < _movementDuration)
             {
                 transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
@@ -102,12 +117,12 @@ public class PlayerController : MonoBehaviour
                 worldPosition = nextWorldPosition;
                 transform.position = worldPosition;
                 _timeElapsed = 0f;
-                currPlayerMovementTile++;
-                if (currPlayerMovementTile == pathToTake.Count-1)
+                _currPlayerMovementTile++;
+                if (_currPlayerMovementTile == _pathToTake.Count-1)
                 {
                     _playerMoving = false;
-                    pathToTake.Clear();
-                    currPlayerMovementTile = 0;
+                    _pathToTake.Clear();
+                    _currPlayerMovementTile = 0;
                 }
             }
         }
@@ -115,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnPlayer(int x, int y)
     {
-        transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
+        transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0f, y * 2f - GameScript.Height + 1);
         PlayerTileCoords = new Vector2Int(x, y);
     }
 
@@ -269,21 +284,23 @@ public class PlayerController : MonoBehaviour
             ts = tsPrev;
             while (ts != null)
             {
-                pathToTake.Add(ts.coords);
+                _pathToTake.Add(ts.coords);
                 ts = ts.cameFrom;
             }
 
             _playerMoving = true;
-            transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
-            GameScript.Tiles[y][x].hasPlayer = true;
+            transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0f, y * 2f - GameScript.Height + 1);
+            var tile = GameScript.Tiles[y][x];
+            tile.hasPlayer = true;
             PlayerTileCoords = new Vector2Int(x, y);
-            if (GameScript.Tiles[y][x].hasEnemy)
+            if (tile.hasEnemy)
             {
-                GameScript.Tiles[y][x].hasDeadEnemy = true;
-                GameScript.Tiles[y][x].hasEnemy = false;
-                GameScript.enemiesAlive.Remove(GameScript.Tiles[y][x].enemy.GetComponent<EnemyScript>());
-                Destroy(GameScript.Tiles[y][x].enemy);
-                GameScript.Tiles[y][x].enemy = null;
+                tile.hasDeadEnemy = true;
+                tile.hasEnemy = false;
+                GameScript.enemiesAlive.Remove(tile.enemy.GetComponent<EnemyScript>());
+                IncreaseScore(tile.enemy.GetComponent<EnemyScript>().type);
+                Destroy(tile.enemy);
+                tile.enemy = null;
             }
             GameScript.Phase = 1;
         }
@@ -440,6 +457,19 @@ public class PlayerController : MonoBehaviour
         if (_health <= 0)
         {
             Debug.Log("Game Over");
+        }
+    }
+
+    public void IncreaseScore(EnemyScript.EnemyType type)
+    {
+        switch (type)
+        {
+            case EnemyScript.EnemyType.King: _score += 1; break;
+            case EnemyScript.EnemyType.Knight: _score += 3; break;
+            case EnemyScript.EnemyType.Rook: _score += 3; break;
+            case EnemyScript.EnemyType.Bishop: _score += 3; break;
+            case EnemyScript.EnemyType.Superman: _score += 5; break;
+            // default: prefab = gs.kingPrefab; break;
         }
     }
 }
