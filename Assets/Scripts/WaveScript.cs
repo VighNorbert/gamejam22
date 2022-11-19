@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class WaveScript : MonoBehaviour
 {
-    public List<List<EnemySpawnPoint>> Enemies;
+    public List<List<EnemySpawnPoint>> Enemies = new List<List<EnemySpawnPoint>>();
     
     public int enemyRowIndex = 0;
     
     public GameScript gs;
 
+    public int kingCount = 0;
+    public int knightCount = 0;
+    public int rookCount = 0;
+    public int bishopCount = 0;
+    public int supermanCount = 0;
+    
     public bool SpawnNextEnemies()
     {
         if (enemyRowIndex < Enemies.Count)
