@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
                             }
                             GameScript.phase = 3;
-                            // todo run movement of enemies
+                            gs.MoveEnemies();
                         }
 
                     }

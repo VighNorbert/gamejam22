@@ -69,4 +69,10 @@ public class GameScript : MonoBehaviour
             }
         }
     }
+
+    public void MoveEnemies()
+    {
+        
+        // throw new System.NotImplementedException();
+    }
 }

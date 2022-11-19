@@ -1542,6 +1542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currShape: {fileID: 0}
+  gs: {fileID: 271571414}
 --- !u!4 &786955834
 Transform:
   m_ObjectHideFlags: 0
