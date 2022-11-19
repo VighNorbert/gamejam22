@@ -31,6 +31,12 @@ public class PlayerController : MonoBehaviour
     public static GameObject healthUI;
     public  GameObject _healthUI;
 
+    private float _timeElapsed = 0f;
+    private float _movementDuration = 0.2f;
+    private List<Vector2Int> pathToTake = new();
+    private bool _playerMoving = false;
+    private int currPlayerMovementTile = 0;
+
     public PlayerController()
     {
         _angle = 0;
@@ -76,6 +82,32 @@ public class PlayerController : MonoBehaviour
         else if (GameScript.Phase == 5)
         {
             HandlePhaseFive();
+        }
+
+        if (_playerMoving)
+        {
+            Vector3 worldPosition = new Vector3(pathToTake[currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, pathToTake[currPlayerMovementTile].y * 2f - GameScript.Height + 1);
+            Vector3 nextWorldPosition =
+                new Vector3(pathToTake[currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
+                    pathToTake[currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
+            if (_timeElapsed < _movementDuration)
+            {
+                transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
+                _timeElapsed += Time.deltaTime;
+            }
+            else
+            {
+                worldPosition = nextWorldPosition;
+                transform.position = worldPosition;
+                _timeElapsed = 0f;
+                currPlayerMovementTile++;
+                if (currPlayerMovementTile == pathToTake.Count-1)
+                {
+                    _playerMoving = false;
+                    pathToTake.Clear();
+                    currPlayerMovementTile = 0;
+                }
+            }
         }
     }
 
@@ -233,10 +265,11 @@ public class PlayerController : MonoBehaviour
             ts = tsPrev;
             while (ts != null)
             {
-                Debug.Log(ts.coords);
+                pathToTake.Add(ts.coords);
                 ts = ts.cameFrom;
             }
-            
+
+            _playerMoving = true;
             transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
             GameScript.Tiles[y][x].hasPlayer = true;
             PlayerTileCoords = new Vector2Int(x, y);
