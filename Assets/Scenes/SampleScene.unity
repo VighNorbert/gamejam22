@@ -801,11 +801,11 @@ MonoBehaviour:
   - {fileID: 443412706}
   - {fileID: 1406414553}
   pc: {fileID: 1184085009}
-  kingPrefab: {fileID: 3064917197215618618, guid: bb1fce3cca7c141478ee38a2571fbf0c, type: 3}
-  knightPrefab: {fileID: 8138650061371506032, guid: d029b1cdeefc76f499ce91c8d382feec, type: 3}
-  rookPrefab: {fileID: 6872993334205124073, guid: 50e6d840ab47a7c40b791d6f73a58239, type: 3}
-  bishopPrefab: {fileID: 6384661722192533999, guid: 9d88e9a3d8c85ef4a973b6f1da91e0b9, type: 3}
-  supermanPrefab: {fileID: 6075017981953262903, guid: 780aa29835d9e204fa7173c633c3fc68, type: 3}
+  kingPrefab: {fileID: 2023109211568573218, guid: 7f0da01d636b6c540a22c7ecaa449734, type: 3}
+  knightPrefab: {fileID: 1167780733739060072, guid: cf44aa105bdd4a741aa18e0edf4fadb9, type: 3}
+  rookPrefab: {fileID: 8021401349821170266, guid: 86bc73a6ae8ed26458e3849004ab6873, type: 3}
+  bishopPrefab: {fileID: 8118894414436656241, guid: 59423d87f0e2b4148b37ee68d31cc7aa, type: 3}
+  supermanPrefab: {fileID: 600000287753691566, guid: 59bda69ab2941d044b054e6c829dbb5c, type: 3}
   infoText: {fileID: 931692099}
   mainCamera: {fileID: 963194227}
   maxCameraHeight: 24
