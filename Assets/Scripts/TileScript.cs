@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class TileScript : MonoBehaviour
 {
+    public bool hasPlayer;
     public bool hasEnemy;
     public bool hasDeadEnemy;
     private int _fogState;
@@ -9,6 +10,7 @@ public class TileScript : MonoBehaviour
     public Vector2Int coords;
 
     private Color _basicColor;
+    private Color _fogColor;
 
     public GameObject fog;
 
@@ -59,6 +61,7 @@ public class TileScript : MonoBehaviour
             foreach (var t in tile)
             {
                 t.ResetColor();
+                t.ResetFogColor();
             }
         }
     }
@@ -67,10 +70,15 @@ public class TileScript : MonoBehaviour
     {
         _renderer.material.color = _basicColor;
     }
+
+    private void ResetFogColor()
+    {
+        fog.GetComponent<Renderer>().material.color = Color.white;
+    }
     
     private void AgeTheFog()
     {
-        if (_fogState > 0)
+        if (_fogState > 0 && !hasPlayer)
         {
             _fogState--;
             if (_fogState == 0)

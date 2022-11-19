@@ -58,6 +58,7 @@ public class GameScript : MonoBehaviour
             } 
         }
 
+        pc.SpawnPlayer(10, 0);
         Tiles[0][10].SetFog(3);
         
         _currentLevel = levels[0];
@@ -114,6 +115,7 @@ public class GameScript : MonoBehaviour
         
         TileScript.AgeAllFogTiles();
         
-        Phase = 1;
+        
+        // Phase = 1;
     }
 }
