@@ -84,6 +84,11 @@ public class PlayerController : MonoBehaviour
                 _currShapeIndex = 0;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            ChooseSpecialAbility();
+        }
         
         if (GameScript.Phase == 2)
         {
@@ -97,33 +102,40 @@ public class PlayerController : MonoBehaviour
         _animator.SetFloat("runSpeed", 0f);
         if (_playerMoving)
         {
-            Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
-            Vector3 nextWorldPosition =
-                new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
-                    _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
-            transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
-            float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
-            Debug.Log(speed);
-            
-            _animator.SetFloat("runSpeed", speed / 10f);
-
-            if (_timeElapsed < _movementDuration)
+            if (_pathToTake.Count == 1)
             {
-                transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
-                _timeElapsed += Time.deltaTime;
+                _playerMoving = false;
+                _pathToTake.Clear(); 
             }
             else
             {
-                worldPosition = nextWorldPosition;
-                transform.position = worldPosition;
-                _timeElapsed = 0f;
-                _currPlayerMovementTile++;
-                if (_currPlayerMovementTile == _pathToTake.Count-1)
+                Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
+                Vector3 nextWorldPosition =
+                    new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
+                        _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
+                transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
+                float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
+
+                _animator.SetFloat("runSpeed", speed / 10f);
+
+                if (_timeElapsed < _movementDuration)
                 {
-                    _playerMoving = false;
-                    _pathToTake.Clear();
-                    _currPlayerMovementTile = 0;
+                    transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
+                    _timeElapsed += Time.deltaTime;
                 }
+                else
+                {
+                    worldPosition = nextWorldPosition;
+                    transform.position = worldPosition;
+                    _timeElapsed = 0f;
+                    _currPlayerMovementTile++;
+                    if (_currPlayerMovementTile == _pathToTake.Count-1)
+                    {
+                        _playerMoving = false;
+                        _pathToTake.Clear();
+                        _currPlayerMovementTile = 0;
+                    }
+                }   
             }
         }
     }
@@ -147,7 +159,14 @@ public class PlayerController : MonoBehaviour
                 {
                     ShapeController sc = currShape.GetComponent<ShapeController>();
                     hit.transform.GetComponent<Renderer>().material.color = Color.red;
-                    _color = IsNeighbouring(sc, hit) ? Color.green : Color.red;
+                    if (_hasSpecialAbility)
+                    {
+                        _color = Color.green;
+                    }
+                    else
+                    {
+                        _color = IsNeighbouring(sc, hit) ? Color.green : Color.red;   
+                    }
 
                     foreach (var p in sc.points)
                     {
@@ -182,13 +201,21 @@ public class PlayerController : MonoBehaviour
                         _currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x,
                             hit.transform.GetComponent<TileScript>().coords.y);
 
-                        SwapShape();
+                        if (_hasSpecialAbility)
+                        {
+                            KillThemAll();
+                            GameScript.Phase = 1;
+                        }
+                        else
+                        {
+                            SwapShape();
 
-                        currShape = null;
-                        GameScript.Phase = 3;
-                        MarkInitFog();
-                        infoText.GetComponent<InfotextController>().UpdateInfoText("Enemies moving");
-                        gs.MoveEnemies();
+                            currShape = null;
+                            GameScript.Phase = 3;
+                            MarkInitFog();
+                            infoText.GetComponent<InfotextController>().UpdateInfoText("Enemies moving");
+                            gs.MoveEnemies();   
+                        }
                     }
                 }
             }
@@ -295,12 +322,7 @@ public class PlayerController : MonoBehaviour
             PlayerTileCoords = new Vector2Int(x, y);
             if (tile.hasEnemy)
             {
-                tile.hasDeadEnemy = true;
-                tile.hasEnemy = false;
-                GameScript.enemiesAlive.Remove(tile.enemy.GetComponent<EnemyScript>());
-                IncreaseScore(tile.enemy.GetComponent<EnemyScript>().type);
-                Destroy(tile.enemy);
-                tile.enemy = null;
+                KillEnemy(tile);
             }
             GameScript.Phase = 1;
         }
@@ -358,8 +380,6 @@ public class PlayerController : MonoBehaviour
 
     public void MarkFog()
     {
-
-        Debug.Log(_shapeToUse.Count);
         foreach (var shapePoint in _shapeToUse)
         {
             int y = _currTileCoords.y + shapePoint.y;
@@ -460,7 +480,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void IncreaseScore(EnemyScript.EnemyType type)
+    private void IncreaseScore(EnemyScript.EnemyType type)
     {
         switch (type)
         {
@@ -471,5 +491,54 @@ public class PlayerController : MonoBehaviour
             case EnemyScript.EnemyType.Superman: _score += 5; break;
             // default: prefab = gs.kingPrefab; break;
         }
+    }
+
+    private void ChooseSpecialAbility()
+    {
+        currShape = transform.Find("Shapes").Find("Special").gameObject;
+        _hasSpecialAbility = true;
+    }
+
+    public void SetHasSpecialAbility(bool set)
+    {
+        _hasSpecialAbility = set;
+    }
+
+    public void KillEnemy(TileScript tile)
+    {
+        tile.hasDeadEnemy = true;
+        tile.hasEnemy = false;
+        GameScript.enemiesAlive.Remove(tile.enemy.GetComponent<EnemyScript>());
+        IncreaseScore(tile.enemy.GetComponent<EnemyScript>().type);
+        Destroy(tile.enemy);
+        tile.enemy = null;
+    }
+
+    private void KillThemAll()
+    {
+        foreach (var shapePoint in _shapeToUse)
+        {
+            int y = _currTileCoords.y + shapePoint.y;
+            int x = _currTileCoords.x + shapePoint.x;
+            Debug.Log(x + " " + y);
+
+            if (GameScript.Width <= x || GameScript.Height <= y || 0 > x || 0 > y)
+            {
+                continue;
+            }
+
+            var tile = GameScript.Tiles[y][x].GetComponent<TileScript>();
+            if (tile.hasEnemy)
+            {
+                Debug.Log("enemy found");
+                KillEnemy(tile);
+            }
+        }
+        Debug.Log(GameScript.enemiesAlive.Count);
+    }
+
+    public void clearShapeToUse()
+    {
+        _shapeToUse.Clear();
     }
 }

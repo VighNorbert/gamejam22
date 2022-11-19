@@ -15,7 +15,11 @@ public class InventoryController : MonoBehaviour
 
     public void UseShape(int shape)
     {
-        player.GetComponent<PlayerController>().currShape = player.transform.Find("Shapes").transform.GetChild(shape).gameObject;
+        var pc = player.GetComponent<PlayerController>();
+        pc.currShape = player.transform.Find("Shapes").transform.GetChild(shape).gameObject;
+        pc.SetHasSpecialAbility(false);
+        pc.clearShapeToUse();
+        
     }
 
 
