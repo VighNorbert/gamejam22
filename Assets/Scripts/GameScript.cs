@@ -72,7 +72,12 @@ public class GameScript : MonoBehaviour
 
     public void MoveEnemies()
     {
+        foreach (EnemyScript enemy in enemiesAlive)
+        {
+            enemy.Move();
+        }
+
+        phase += 1;
         
-        // throw new System.NotImplementedException();
     }
 }

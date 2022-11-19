@@ -21,6 +21,8 @@ public class EnemyScript : MonoBehaviour
 
     public Vector2Int position;
 
+    public Vector2Int nextPosition;
+
     public List<Vector2Int> possibleMoves;
 
     void Start()
@@ -29,12 +31,15 @@ public class EnemyScript : MonoBehaviour
         personality = Random.Range(0f, 1f);
     }
 
-    public Vector2Int ChooseNextMove()
+    public void ChooseNextMove()
     {
         if (Random.Range(0f, 1f) <= randomness)
         {
             // random move
-            return possibleMoves[Random.Range(0, possibleMoves.Count)];
+            nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
+            GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+            GameScript.tiles[position.y][position.x].hasEnemy = false;
+            return;
         }
         
         // best move
@@ -51,7 +56,15 @@ public class EnemyScript : MonoBehaviour
                 bestMoveIndex = possibleMoves.IndexOf(move);
             }
         }
-        return possibleMoves[bestMoveIndex];
+        nextPosition = position + possibleMoves[bestMoveIndex];
+        GameScript.tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+        GameScript.tiles[position.y][position.x].hasEnemy = false;
+    }
+
+    public void Move()
+    {
+        position = nextPosition;
+        transform.position = new Vector3(nextPosition.x * 2f - GameScript.width + 1, 0.5f, nextPosition.y * 2f - GameScript.height + 1);
     }
 
     private float EvaluateMove(Vector2Int move)
