@@ -126,3 +126,4 @@ MonoBehaviour:
   - {x: -1, y: 0}
   - {x: -1, y: -1}
   gs: {fileID: 0}
+  movementSpeed: 1

@@ -875,6 +875,7 @@ MonoBehaviour:
   minHorizontal: -10
   maxVertical: 8
   minVertical: -26
+  enemiesMoved: 0
 --- !u!4 &271571415
 Transform:
   m_ObjectHideFlags: 0
@@ -5819,7 +5820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: rookCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: rowsCount
@@ -5827,11 +5828,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: bishopCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: knightCount
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
+      propertyPath: supermanCount
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 163277aea359efa409b002c89b23ff90, type: 3}

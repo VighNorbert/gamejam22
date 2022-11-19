@@ -88,6 +88,7 @@ public class WaveScript : MonoBehaviour
                     new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),
                     Quaternion.identity);
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
+                es.gs = gs;
                 es.position = new Vector2Int(esp.XCoord, GameScript.Height - 1);
                 GameScript.enemiesAlive.Add(es);
             }

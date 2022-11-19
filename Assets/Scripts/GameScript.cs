@@ -45,6 +45,10 @@ public class GameScript : MonoBehaviour
 
     private static float MovementSpeed = 30f;
     private static float ScrollingSpeed = 500f;
+
+    [HideInInspector]
+    public int enemiesMoved = 0;
+    
     void Start()
     {
         Tiles = new List<List<TileScript>>();
@@ -89,6 +93,19 @@ public class GameScript : MonoBehaviour
             Phase += 1;
         }
 
+        if (enemiesMoved == enemiesAlive.Count && Phase == 3)
+        {
+            Phase += 1;
+            enemiesMoved = 0;
+        }
+
+        if (Phase == 4)
+        {
+            pc.MarkFog();
+            Phase += 1;
+            TileScript.AgeAllFogTiles();
+        }
+
         HandleCamera();
     }
 
@@ -131,12 +148,5 @@ public class GameScript : MonoBehaviour
             Destroy(enemy);
         }
         enemiesToBeRemoved.Clear();
-
-
-        Phase += 1;
-        pc.MarkFog();
-        Phase += 1;
-
-        TileScript.AgeAllFogTiles();
     }
 }
