@@ -23,9 +23,11 @@ public class EnemyScript : MonoBehaviour
 
     public List<Vector2Int> possibleMoves;
 
+    public GameObject gs;
+
     void Start()
     {
-        randomness = Random.Range(0f, 1f);
+        randomness = Random.Range(0f, 0.3f);
         personality = Random.Range(0f, 1f);
     }
 
@@ -79,6 +81,12 @@ public class EnemyScript : MonoBehaviour
     public void Move()
     {
         position = nextPosition;
+        if (nextPosition.y * 2f - GameScript.Height + 1 == -19)
+        {
+            PlayerController.HealthDown();
+            //gs.GetComponent<GameScript>().RemoveEnemy(this.gameObject);
+            Destroy(this.gameObject);
+        }
         transform.position = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
     }
 

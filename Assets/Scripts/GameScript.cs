@@ -80,6 +80,11 @@ public class GameScript : MonoBehaviour
         HandleCamera();
     }
 
+    public void RemoveEnemy(GameObject enemy)
+    {
+        enemiesAlive.Remove(enemy.GetComponent<EnemyScript>());
+    }
+
     private void HandleCamera()
     {        
         float horizontalAxis = Input.GetAxisRaw("Horizontal") * MovementSpeed * Time.deltaTime;

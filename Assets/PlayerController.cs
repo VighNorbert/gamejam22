@@ -26,6 +26,9 @@ public class PlayerController : MonoBehaviour
 
     private static int _health = 5;
 
+    public static GameObject healthUI;
+    public  GameObject _healthUI;
+
     public PlayerController()
     {
         _angle = 0;
@@ -33,6 +36,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        healthUI = _healthUI;
         totalShapes = transform.Find("Shapes").transform.childCount; 
     }
 
@@ -234,6 +238,9 @@ public class PlayerController : MonoBehaviour
     public static void HealthDown()
     {
         _health -= 1;
+        GameObject hp = healthUI.transform.GetChild(healthUI.transform.childCount - 1).gameObject;
+        Destroy(hp);
+
         if (_health <= 0)
         {
             Debug.Log("Game Over");
