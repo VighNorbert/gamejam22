@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerController : MonoBehaviour
 {
@@ -86,14 +87,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePhaseTwo()
     {
-        if (currShape)
+        Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
+        // Casts the ray and get the first game object hit
+        Physics.Raycast(ray, out var hit);
+        if (hit.transform != null)
         {
-            Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
-            // Casts the ray and get the first game object hit
-            Physics.Raycast(ray, out var hit);
-            if (hit.transform != null)
+            if (hit.transform.CompareTag("Tile"))
             {
-                if (hit.transform.CompareTag("Tile"))
+                if (currShape)
                 {
                     ShapeController sc = currShape.GetComponent<ShapeController>();
                     hit.transform.GetComponent<Renderer>().material.color = Color.red;
@@ -112,31 +113,44 @@ public class PlayerController : MonoBehaviour
                         pointsX = _xFlip * pointsX;
                         pointsY = _yFlip * pointsY;
 
-                        int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
-                        int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
-                        
+                        TileScript ts = hit.transform.GetComponent<TileScript>();
+                        int y = ts.coords.y + pointsY;
+                        int x = ts.coords.x + pointsX;
+
                         if (sc.points.Count > _shapeToUse.Count)
                         {
                             _shapeToUse.Add(new Vector2Int(pointsX, pointsY));
                         }
-                        
+
                         if (x < GameScript.Width && y < GameScript.Height && x >= 0 && y >= 0)
                         {
                             GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
                         }
                     }
-                    
+
                     if (Input.GetMouseButtonDown(0) && _color == Color.green)
                     {
-                        _currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
-                        
+                        _currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x,
+                            hit.transform.GetComponent<TileScript>().coords.y);
+
                         SwapShape();
-                        
+
                         currShape = null;
                         GameScript.Phase = 3;
                         gs.MoveEnemies();
                     }
-
+                }
+            }
+            else if (hit.transform.CompareTag("Enemy"))
+            {
+                List<Vector2Int> enemyPossibleMoves = hit.transform.GetComponent<EnemyScript>().possibleMoves;
+                foreach (var possibleMove in enemyPossibleMoves)
+                {
+                    Vector2Int enemyPosition = hit.transform.GetComponent<EnemyScript>().position;
+                    if (InBounds(enemyPosition.x + possibleMove.x, enemyPosition.y + possibleMove.y))
+                    {
+                        GameScript.Tiles[enemyPosition.y+possibleMove.y][enemyPosition.x+possibleMove.x].transform.GetComponent<Renderer>().material.color = Color.yellow;   
+                    }
                 }
             }
         }
@@ -154,7 +168,7 @@ public class PlayerController : MonoBehaviour
             if (hit.transform.CompareTag("Tile"))
             {
                 TileScript ts = hit.transform.GetComponent<TileScript>();
-                
+
                 y = ts.coords.y;
                 x = ts.coords.x;
                 if (ts.GetHasFog())
