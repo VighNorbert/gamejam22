@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3330964276491541072}
   - component: {fileID: 4201562646420288080}
   - component: {fileID: 3460142440549986493}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,6 +115,7 @@ MonoBehaviour:
   randomness: 0
   personality: 0
   position: {x: 0, y: 0}
+  nextPosition: {x: 0, y: 0}
   possibleMoves:
   - {x: -3, y: 0}
   - {x: -2, y: 0}
@@ -128,3 +129,4 @@ MonoBehaviour:
   - {x: 0, y: 1}
   - {x: 0, y: 2}
   - {x: 0, y: 3}
+  gs: {fileID: 0}

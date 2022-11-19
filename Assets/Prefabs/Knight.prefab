@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5893335954892275980}
   - component: {fileID: 8356670684374986765}
   - component: {fileID: 2624435237773415505}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Knight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,6 +115,7 @@ MonoBehaviour:
   randomness: 0
   personality: 0
   position: {x: 0, y: 0}
+  nextPosition: {x: 0, y: 0}
   possibleMoves:
   - {x: -2, y: 1}
   - {x: -2, y: -1}
@@ -124,3 +125,4 @@ MonoBehaviour:
   - {x: 1, y: -2}
   - {x: 2, y: 1}
   - {x: 2, y: -1}
+  gs: {fileID: 0}

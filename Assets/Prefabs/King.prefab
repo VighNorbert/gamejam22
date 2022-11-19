@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8340489791634401066}
   - component: {fileID: 5697809465076453208}
   - component: {fileID: 5335097603925673154}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: King
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,6 +114,8 @@ MonoBehaviour:
   type: 0
   randomness: 0
   personality: 0
+  position: {x: 0, y: 0}
+  nextPosition: {x: 0, y: 0}
   possibleMoves:
   - {x: 1, y: 1}
   - {x: 1, y: 0}
@@ -123,3 +125,4 @@ MonoBehaviour:
   - {x: -1, y: 1}
   - {x: -1, y: 0}
   - {x: -1, y: -1}
+  gs: {fileID: 0}
