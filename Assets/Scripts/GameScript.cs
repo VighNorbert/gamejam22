@@ -46,7 +46,7 @@ public class GameScript : MonoBehaviour
             } 
         }
 
-        Tiles[0][10].SetFog(true);
+        Tiles[0][10].SetFog(3);
         
         _currentLevel = levels[0];
         _currentLevel.StartFirstWave();
@@ -79,6 +79,9 @@ public class GameScript : MonoBehaviour
         
         // todo choose player movement and killing and stuff
         // todo when complete set phase to 1
+        
+        TileScript.AgeAllFogTiles();
+        
         Phase = 1;
     }
 }

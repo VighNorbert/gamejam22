@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
             {
                 continue;
             }
-            GameScript.Tiles[y][x].GetComponent<TileScript>().SetFog(true);
+            GameScript.Tiles[y][x].GetComponent<TileScript>().SetFog();
         }
 
         _shapeToUse.Clear();

@@ -38,11 +38,15 @@ public class EnemyScript : MonoBehaviour
             nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
 
             int tries = 5;
-            while (!(IsInBounds(nextPosition.x, nextPosition.y) 
-                   || GameScript.Tiles[nextPosition.y][nextPosition.x].GetHasFog()
-                   || GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy)
-                   && tries > 0
-                   )
+            while (
+                  !IsInBounds(nextPosition.x, nextPosition.y)
+                  || (
+                        (
+                           GameScript.Tiles[nextPosition.y][nextPosition.x].GetHasFog()
+                           || GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy
+                        ) && tries > 0
+                     )
+                  )
             {
                 tries--;
                 nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
@@ -130,6 +134,6 @@ public class EnemyScript : MonoBehaviour
     
     private static bool IsInBounds(int x, int y)
     {
-        return x is >= 0 and < GameScript.Width && y is >= 0 and < GameScript.Height;
+        return x >= 0 && x < GameScript.Width && y >= 0 && y < GameScript.Height;
     }
 }

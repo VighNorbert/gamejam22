@@ -4,7 +4,7 @@ public class TileScript : MonoBehaviour
 {
     public bool hasEnemy;
     public bool hasDeadEnemy;
-    private bool _hasFog;
+    private int _fogState;
     public bool isFinishingTile;
     public Vector2Int coords;
 
@@ -36,15 +36,15 @@ public class TileScript : MonoBehaviour
         coords = new Vector2Int(x, z);
     }
 
-    public void SetFog(bool fogState)
+    public void SetFog(int state = 4)
     {
-        _hasFog = fogState;
-        fog.SetActive(fogState);
+        _fogState = state;
+        fog.SetActive(true);
     }
 
     public bool GetHasFog()
     {
-        return _hasFog;
+        return _fogState > 0;
     }
 
     private void OnMouseExit()
@@ -63,8 +63,31 @@ public class TileScript : MonoBehaviour
         }
     }
 
-    public void ResetColor()
+    private void ResetColor()
     {
         _renderer.material.color = _basicColor;
+    }
+    
+    private void AgeTheFog()
+    {
+        if (_fogState > 0)
+        {
+            _fogState--;
+            if (_fogState == 0)
+            {
+                fog.SetActive(false);
+            }
+        }
+    }
+    
+    public static void AgeAllFogTiles()
+    {
+        foreach (var tile in GameScript.Tiles)
+        {
+            foreach (var t in tile)
+            {
+                t.AgeTheFog();
+            }
+        }
     }
 }
