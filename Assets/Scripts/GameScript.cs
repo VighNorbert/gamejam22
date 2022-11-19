@@ -10,7 +10,6 @@ public class GameScript : MonoBehaviour
 
     public Transform tileParent;
     
-    public Camera mainCamera;
 
     public static List<List<TileScript>> Tiles;
 
@@ -28,9 +27,22 @@ public class GameScript : MonoBehaviour
     public GameObject bishopPrefab;
     public GameObject supermanPrefab;
 
+    [Space(20)]
+    public Camera mainCamera;
+
+    public float maxCameraHeight = 24f;
+    public float minCameraHeight = 10f;
+
+    public float maxHorizontal = 10f;
+    public float minHorizontal = -10f;
+
+    public float maxVertical = 8f;
+    public float minVertical = -26f;
 
     public static int Phase = 2;
 
+    private static float MovementSpeed = 30f;
+    private static float ScrollingSpeed = 500f;
     void Start()
     {
         Tiles = new List<List<TileScript>>();
@@ -64,6 +76,26 @@ public class GameScript : MonoBehaviour
             
             Phase += 1;
         }
+
+        HandleCamera();
+    }
+
+    private void HandleCamera()
+    {        
+        float horizontalAxis = Input.GetAxisRaw("Horizontal") * MovementSpeed * Time.deltaTime;
+        float verticalAxis = Input.GetAxisRaw("Vertical") * MovementSpeed * Time.deltaTime;
+        float scrollAxis = Input.GetAxisRaw("Mouse ScrollWheel") * ScrollingSpeed * Time.deltaTime;
+
+        Vector3 newPosition = mainCamera.transform.position;
+        
+        newPosition.x += horizontalAxis;
+        newPosition.y = Mathf.Clamp(newPosition.y - scrollAxis, minCameraHeight, maxCameraHeight);
+        newPosition.z = Mathf.Clamp(newPosition.z + verticalAxis + scrollAxis, minVertical, maxVertical);
+
+        float horizontalModifier = 1 - (newPosition.y - minCameraHeight) / (maxCameraHeight - minCameraHeight);
+        newPosition.x = Mathf.Clamp(newPosition.x, minHorizontal * horizontalModifier, maxHorizontal * horizontalModifier);
+        
+        mainCamera.transform.position = newPosition;
     }
 
     public void MoveEnemies()
