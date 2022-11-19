@@ -4,23 +4,34 @@ using UnityEngine;
 
 public class WaveScript : MonoBehaviour
 {
-    public List<List<EnemySpawnPoint>> Enemies = new List<List<EnemySpawnPoint>>();
+    private List<List<EnemySpawnPoint>> Enemies = new List<List<EnemySpawnPoint>>();
     
-    public int enemyRowIndex = 0;
+    private int _enemyRowIndex = 0;
     
     public GameScript gs;
 
+    [Space(10)]
+    
     public int kingCount = 0;
     public int knightCount = 0;
     public int rookCount = 0;
     public int bishopCount = 0;
     public int supermanCount = 0;
+
+    [Space(10)]
     
+    public int rowsCount;
+    
+    public void StartWave()
+    {
+        // Enemies.Add();
+    }
+
     public bool SpawnNextEnemies()
     {
-        if (enemyRowIndex < Enemies.Count)
+        if (_enemyRowIndex < Enemies.Count)
         {
-            foreach (EnemySpawnPoint esp in Enemies[enemyRowIndex])
+            foreach (EnemySpawnPoint esp in Enemies[_enemyRowIndex])
             {
                 GameObject prefab;
                 switch (esp.type)
@@ -39,7 +50,7 @@ public class WaveScript : MonoBehaviour
                 es.position = new Vector2Int(esp.xCoord, GameScript.height - 1);
                 gs.enemiesAlive.Add(es);
             }
-            enemyRowIndex++;
+            _enemyRowIndex++;
             return true;
         }
 
