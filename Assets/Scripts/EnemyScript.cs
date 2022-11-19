@@ -187,4 +187,9 @@ public class EnemyScript : MonoBehaviour
     {
         return x >= 0 && x < GameScript.Width && y >= 0 && y < GameScript.Height;
     }
+    
+    private void OnMouseExit()
+    {
+        TileScript.ResetAllColors();
+    }
 }
