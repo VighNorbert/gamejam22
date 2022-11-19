@@ -33,14 +33,14 @@ public class GameScript : MonoBehaviour
     [Space(20)]
     public Camera mainCamera;
 
-    public float maxCameraHeight = 24f;
-    public float minCameraHeight = 10f;
+    public float maxCameraHeight = 22f;
+    public float minCameraHeight = 5f;
 
-    public float maxHorizontal = 10f;
-    public float minHorizontal = -10f;
+    public float maxHorizontal = 15f;
+    public float minHorizontal = -15f;
 
-    public float maxVertical = 8f;
-    public float minVertical = -26f;
+    public float maxVertical = 20f;
+    public float minVertical = -18f;
 
     public static int Phase = 2;
 
@@ -129,7 +129,7 @@ public class GameScript : MonoBehaviour
         
         newPosition.x += horizontalAxis;
         newPosition.y = Mathf.Clamp(newPosition.y - scrollAxis, minCameraHeight, maxCameraHeight);
-        newPosition.z = Mathf.Clamp(newPosition.z + verticalAxis + scrollAxis, minVertical, maxVertical);
+        newPosition.z = Mathf.Clamp(newPosition.z + verticalAxis + scrollAxis, minVertical - newPosition.y, maxVertical - newPosition.y);
 
         float horizontalModifier = 1 - (newPosition.y - minCameraHeight) / (maxCameraHeight - minCameraHeight);
         newPosition.x = Mathf.Clamp(newPosition.x, minHorizontal * horizontalModifier, maxHorizontal * horizontalModifier);

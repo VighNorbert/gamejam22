@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
             Vector3 nextWorldPosition =
-                new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
+                new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0f,
                     _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
             transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
             float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnPlayer(int x, int y)
     {
-        transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
+        transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0f, y * 2f - GameScript.Height + 1);
         PlayerTileCoords = new Vector2Int(x, y);
     }
 
@@ -289,7 +289,7 @@ public class PlayerController : MonoBehaviour
             }
 
             _playerMoving = true;
-            transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
+            transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0f, y * 2f - GameScript.Height + 1);
             var tile = GameScript.Tiles[y][x];
             tile.hasPlayer = true;
             PlayerTileCoords = new Vector2Int(x, y);
