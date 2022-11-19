@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6729761824542488913}
   m_Layer: 0
   m_Name: Bishop
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -114,6 +114,8 @@ MonoBehaviour:
   type: 3
   randomness: 0
   personality: 0
+  position: {x: 0, y: 0}
+  nextPosition: {x: 0, y: 0}
   possibleMoves:
   - {x: 3, y: 3}
   - {x: 2, y: 2}
@@ -127,3 +129,5 @@ MonoBehaviour:
   - {x: -1, y: 1}
   - {x: -2, y: 2}
   - {x: -3, y: 3}
+  gs: {fileID: 0}
+  movementSpeed: 2

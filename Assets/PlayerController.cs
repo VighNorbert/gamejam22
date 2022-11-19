@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private readonly List<Vector2Int> _shapeToUse = new();
 
     private Vector2Int _currTileCoords;
+    public static Vector2Int PlayerTileCoords;
     
     public GameScript gs;
 
@@ -69,62 +71,200 @@ public class PlayerController : MonoBehaviour
         
         if (GameScript.Phase == 2)
         {
-            if (currShape)
+            HandlePhaseTwo();
+        }   
+        else if (GameScript.Phase == 5)
+        {
+            HandlePhaseFive();
+        }
+    }
+
+    public void SpawnPlayer(int x, int y)
+    {
+        transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
+        PlayerTileCoords = new Vector2Int(x, y);
+    }
+
+    private void HandlePhaseTwo()
+    {
+        Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
+        // Casts the ray and get the first game object hit
+        Physics.Raycast(ray, out var hit);
+        if (hit.transform != null)
+        {
+            if (hit.transform.CompareTag("Tile"))
             {
-                Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
-                // Casts the ray and get the first game object hit
-                Physics.Raycast(ray, out var hit);
-                if (hit.transform != null)
+                if (currShape)
                 {
-                    if (hit.transform.CompareTag("Tile"))
+                    ShapeController sc = currShape.GetComponent<ShapeController>();
+                    hit.transform.GetComponent<Renderer>().material.color = Color.red;
+                    _color = IsNeighbouring(sc, hit) ? Color.green : Color.red;
+
+                    foreach (var p in sc.points)
                     {
-                        ShapeController sc = currShape.GetComponent<ShapeController>();
-                        hit.transform.GetComponent<Renderer>().material.color = Color.red;
-                        _color = IsNeighbouring(sc, hit) ? Color.green : Color.red;
+                        int pointsY = p.y;
+                        int pointsX = p.x;
 
-                        foreach (var p in sc.points)
+                        if (_swap)
                         {
-                            int pointsY = p.y;
-                            int pointsX = p.x;
-
-                            if (_swap)
-                            {
-                                (pointsX, pointsY) = (pointsY, pointsX);
-                            }
-
-                            pointsX = _xFlip * pointsX;
-                            pointsY = _yFlip * pointsY;
-
-                            int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
-                            int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
-                            
-                            if (sc.points.Count > _shapeToUse.Count)
-                            {
-                                _shapeToUse.Add(new Vector2Int(pointsX, pointsY));
-                            }
-                            
-                            if (x < GameScript.Width && y < GameScript.Height && x >= 0 && y >= 0)
-                            {
-                                GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
-                            }
-                        }
-                        
-                        if (Input.GetMouseButtonDown(0) && _color == Color.green)
-                        {
-                            _currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
-                            
-                            SwapShape();
-                            
-                            currShape = null;
-                            GameScript.Phase = 3;
-                            gs.MoveEnemies();
+                            (pointsX, pointsY) = (pointsY, pointsX);
                         }
 
+                        pointsX = _xFlip * pointsX;
+                        pointsY = _yFlip * pointsY;
+
+                        TileScript ts = hit.transform.GetComponent<TileScript>();
+                        int y = ts.coords.y + pointsY;
+                        int x = ts.coords.x + pointsX;
+
+                        if (sc.points.Count > _shapeToUse.Count)
+                        {
+                            _shapeToUse.Add(new Vector2Int(pointsX, pointsY));
+                        }
+
+                        if (x < GameScript.Width && y < GameScript.Height && x >= 0 && y >= 0)
+                        {
+                            GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
+                        }
+                    }
+
+                    if (Input.GetMouseButtonDown(0) && _color == Color.green)
+                    {
+                        _currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x,
+                            hit.transform.GetComponent<TileScript>().coords.y);
+
+                        SwapShape();
+
+                        currShape = null;
+                        GameScript.Phase = 3;
+                        gs.MoveEnemies();
                     }
                 }
             }
-           
-        }   
+            else if (hit.transform.CompareTag("Enemy"))
+            {
+                List<Vector2Int> enemyPossibleMoves = hit.transform.GetComponent<EnemyScript>().possibleMoves;
+                foreach (var possibleMove in enemyPossibleMoves)
+                {
+                    Vector2Int enemyPosition = hit.transform.GetComponent<EnemyScript>().position;
+                    if (InBounds(enemyPosition.x + possibleMove.x, enemyPosition.y + possibleMove.y))
+                    {
+                        GameScript.Tiles[enemyPosition.y+possibleMove.y][enemyPosition.x+possibleMove.x].transform.GetComponent<Renderer>().material.color = Color.yellow;   
+                    }
+                }
+            }
+        }
+    }
+
+    private void HandlePhaseFive()
+    {
+        GameScript.Tiles[PlayerTileCoords.y][PlayerTileCoords.x].hasPlayer = false;
+        Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
+        int x = -1, y = -1;
+        // Casts the ray and get the first game object hit
+        Physics.Raycast(ray, out var hit);
+        if (hit.transform != null)
+        {
+            if (hit.transform.CompareTag("Tile"))
+            {
+                TileScript ts = hit.transform.GetComponent<TileScript>();
+
+                y = ts.coords.y;
+                x = ts.coords.x;
+                if (ts.GetHasFog())
+                {
+                    if (ts.isFogConnectedToPlayer)
+                    {
+                        _color = Color.green;
+                    }
+                    else
+                    {
+                        _color = Color.red;
+                    }
+
+                    GameScript.Tiles[y][x].fog.transform.GetComponent<Renderer>().material.color = _color;
+                }
+                else
+                {
+                    _color = Color.red;
+                    GameScript.Tiles[y][x].transform.GetComponent<Renderer>().material.color = _color;
+                }
+            }
+            else if (hit.transform.CompareTag("Enemy"))
+            {
+                EnemyScript es = hit.transform.GetComponent<EnemyScript>();
+                (x, y) = (es.position.x, es.position.y);
+                TileScript ts = GameScript.Tiles[y][x];
+                if (ts.GetHasFog())
+                {
+                    if (ts.isFogConnectedToPlayer)
+                    {
+                        _color = Color.green;
+                    }
+                    else
+                    {
+                        _color = Color.red;
+                    }
+                    ts.fog.transform.GetComponent<Renderer>().material.color = _color;
+                }
+                else
+                {
+                    _color = Color.red;
+                    ts.transform.GetComponent<Renderer>().material.color = _color;
+                }
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0) && x >= 0 && y >= 0 && _color == Color.green)
+        {
+            FindPath(PlayerTileCoords.x, PlayerTileCoords.y, null, 0);
+            TileScript tsDest = GameScript.Tiles[y][x];
+            TileScript ts = tsDest;
+            TileScript tsNew;
+            TileScript tsPrev = null;
+            while (ts != null)
+            {
+                tsNew = ts.cameFrom;
+                ts.cameFrom = tsPrev;
+                tsPrev = ts;
+                ts = tsNew;
+            }
+
+            ts = tsPrev;
+            while (ts != null)
+            {
+                Debug.Log(ts.coords);
+                ts = ts.cameFrom;
+            }
+            
+            transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0.5f, y * 2f - GameScript.Height + 1);
+            GameScript.Tiles[y][x].hasPlayer = true;
+            PlayerTileCoords = new Vector2Int(x, y);
+            if (GameScript.Tiles[y][x].hasEnemy)
+            {
+                GameScript.Tiles[y][x].hasDeadEnemy = true;
+                GameScript.Tiles[y][x].hasEnemy = false;
+                GameScript.enemiesAlive.Remove(GameScript.Tiles[y][x].enemy.GetComponent<EnemyScript>());
+                Destroy(GameScript.Tiles[y][x].enemy);
+                GameScript.Tiles[y][x].enemy = null;
+            }
+            GameScript.Phase = 1;
+        }
+    }
+
+    private void FindPath(int x, int y, TileScript cameFrom, int distance)
+    {
+        TileScript tile = GameScript.Tiles[y][x];
+        if (tile.pathCost <= distance || tile.isFogConnectedToPlayer == false)
+        {
+            return;
+        }
+        tile.pathCost = distance;
+        tile.cameFrom = cameFrom;
+        if (x > 0) { FindPath(x - 1, y, tile, distance + 1); }
+        if (x < GameScript.Width - 1) { FindPath(x + 1, y, tile, distance + 1); }
+        if (y > 0) { FindPath(x, y - 1, tile, distance + 1); }
+        if (y < GameScript.Height - 1) { FindPath(x, y + 1, tile, distance + 1); }
     }
 
     private bool IsNeighbouring(ShapeController sc, RaycastHit hit)
@@ -176,6 +316,8 @@ public class PlayerController : MonoBehaviour
         }
 
         _shapeToUse.Clear();
+        _angle = 0;
+        HandleAngles();
     }
 
     private static bool InBounds(int x, int y)

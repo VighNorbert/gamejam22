@@ -33,7 +33,6 @@ public class WaveScript : MonoBehaviour
         InitiateEnemyClass(rookCount, EnemyScript.EnemyType.Rook);
         InitiateEnemyClass(bishopCount, EnemyScript.EnemyType.Bishop);
         InitiateEnemyClass(supermanCount, EnemyScript.EnemyType.Superman);
-        
     }
     
     private void InitiateEnemyClass(int count, EnemyScript.EnemyType type)
@@ -86,6 +85,7 @@ public class WaveScript : MonoBehaviour
                     new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),
                     Quaternion.identity);
                 EnemyScript es = enemy.GetComponent<EnemyScript>();
+                es.gs = gs;
                 es.position = new Vector2Int(esp.XCoord, GameScript.Height - 1);
                 GameScript.enemiesAlive.Add(es);
             }

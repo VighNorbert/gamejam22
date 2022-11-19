@@ -1,16 +1,27 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TileScript : MonoBehaviour
 {
+    public bool hasPlayer;
     public bool hasEnemy;
     public bool hasDeadEnemy;
     private int _fogState;
     public bool isFinishingTile;
     public Vector2Int coords;
 
+    public bool isFogConnectedToPlayer;
+    public TileScript cameFrom;
+    public int pathCost;
+    
     private Color _basicColor;
+    private Color _fogColor;
 
     public GameObject fog;
+
+    [HideInInspector] 
+    public GameObject enemy;
 
     private Renderer _renderer;
 
@@ -59,6 +70,7 @@ public class TileScript : MonoBehaviour
             foreach (var t in tile)
             {
                 t.ResetColor();
+                t.ResetFogColor();
             }
         }
     }
@@ -67,12 +79,21 @@ public class TileScript : MonoBehaviour
     {
         _renderer.material.color = _basicColor;
     }
+
+    private void ResetFogColor()
+    {
+        fog.GetComponent<Renderer>().material.color = Color.white;
+    }
     
     private void AgeTheFog()
     {
         if (_fogState > 0)
         {
-            _fogState--;
+            if (_fogState != 1 || !hasPlayer)
+            {
+                _fogState--;
+            }
+
             if (_fogState == 0)
             {
                 fog.SetActive(false);
@@ -87,7 +108,23 @@ public class TileScript : MonoBehaviour
             foreach (var t in tile)
             {
                 t.AgeTheFog();
+                t.isFogConnectedToPlayer = false;
+                t.cameFrom = null;
+                t.pathCost = Int32.MaxValue;
             }
+        }
+        VisitTile(PlayerController.PlayerTileCoords.x, PlayerController.PlayerTileCoords.y);
+    }
+
+    public static void VisitTile(int x, int y)
+    {
+        TileScript ts = GameScript.Tiles[y][x];
+        if (ts.isFogConnectedToPlayer == false && ts.GetHasFog()) {
+            ts.isFogConnectedToPlayer = true;
+            if (x > 0) VisitTile(x - 1, y);
+            if (x < GameScript.Width - 1) VisitTile(x + 1, y);
+            if (y > 0) VisitTile(x, y - 1);
+            if (y < GameScript.Height - 1) VisitTile(x, y + 1);
         }
     }
 }

@@ -45,6 +45,10 @@ public class GameScript : MonoBehaviour
 
     private static float MovementSpeed = 30f;
     private static float ScrollingSpeed = 500f;
+
+    [HideInInspector]
+    public int enemiesMoved = 0;
+    
     void Start()
     {
         Tiles = new List<List<TileScript>>();
@@ -60,6 +64,7 @@ public class GameScript : MonoBehaviour
             } 
         }
 
+        pc.SpawnPlayer(10, 0);
         Tiles[0][10].SetFog(3);
         
         _currentLevel = levels[0];
@@ -70,13 +75,35 @@ public class GameScript : MonoBehaviour
     {
         if (Phase == 1)
         {
-            _currentLevel.GetCurrentWave().SpawnNextEnemies();
+            bool enemiesRemaining = _currentLevel.GetCurrentWave().SpawnNextEnemies();
             foreach (var enemy in enemiesAlive)
             {
                 enemy.ChooseNextMove();
             }
+
+            if (!enemiesRemaining && enemiesAlive.Count == 0)
+            {
+                if (!_currentLevel.StartNextWave())
+                {
+                    Debug.Log("Level Complete");
+                    // TODO level is finished, do something
+                }
+            }
             
             Phase += 1;
+        }
+
+        if (enemiesMoved == enemiesAlive.Count && Phase == 3)
+        {
+            Phase += 1;
+            enemiesMoved = 0;
+        }
+
+        if (Phase == 4)
+        {
+            pc.MarkFog();
+            Phase += 1;
+            TileScript.AgeAllFogTiles();
         }
 
         HandleCamera();
@@ -121,17 +148,5 @@ public class GameScript : MonoBehaviour
             Destroy(enemy);
         }
         enemiesToBeRemoved.Clear();
-
-
-        Phase += 1;
-        pc.MarkFog();
-        Phase += 1;
-        
-        // todo choose player movement and killing and stuff
-        // todo when complete set phase to 1
-        
-        TileScript.AgeAllFogTiles();
-        
-        Phase = 1;
     }
 }

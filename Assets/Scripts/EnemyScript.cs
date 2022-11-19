@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,7 +24,16 @@ public class EnemyScript : MonoBehaviour
 
     public List<Vector2Int> possibleMoves;
 
-    public GameObject gs;
+    public GameScript gs;
+
+    private bool _moving = false;
+    private float _timeElapsed = 0f;
+
+    public float movementSpeed = 2f;
+    private float _movementDuration = 1f;
+    
+    private Vector3 _worldPosition;
+    private Vector3 _nextWorldPosition;
 
     void Start()
     {
@@ -31,8 +41,34 @@ public class EnemyScript : MonoBehaviour
         personality = Random.Range(0f, 1f);
     }
 
+    void Update()
+    {
+        if (_moving)
+        {
+            if (_timeElapsed < _movementDuration)
+            {
+                transform.position = Vector3.Lerp(_worldPosition, _nextWorldPosition, _timeElapsed / _movementDuration);
+                _timeElapsed += Time.deltaTime;
+            }
+            else
+            {
+                _worldPosition = _nextWorldPosition;
+                transform.position = _worldPosition;
+                _timeElapsed = 0f;
+                _moving = false;
+                gs.enemiesMoved++;
+            }
+        }
+    }
+
     public void ChooseNextMove()
     {
+        if (GameScript.Tiles[position.y][position.x].GetHasFog())
+        {
+            nextPosition = position;
+            return;
+        }
+        
         if (Random.Range(0f, 1f) <= randomness)
         {
             // random move
@@ -53,8 +89,11 @@ public class EnemyScript : MonoBehaviour
                 tries--;
                 nextPosition = position + possibleMoves[Random.Range(0, possibleMoves.Count)];
             }
+            
             GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+            GameScript.Tiles[nextPosition.y][nextPosition.x].enemy = gameObject;
             GameScript.Tiles[position.y][position.x].hasEnemy = false;
+            GameScript.Tiles[position.y][position.x].enemy = null;
             return;
         }
         
@@ -75,18 +114,23 @@ public class EnemyScript : MonoBehaviour
         
         nextPosition = position + possibleMoves[bestMoveIndex];
         GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
+        GameScript.Tiles[nextPosition.y][nextPosition.x].enemy = gameObject;
         GameScript.Tiles[position.y][position.x].hasEnemy = false;
+        GameScript.Tiles[position.y][position.x].enemy = null;
     }
 
     public void Move()
     {
+        _worldPosition = new Vector3(position.x * 2f - GameScript.Width + 1, 0.5f, position.y * 2f - GameScript.Height + 1);
+        _nextWorldPosition = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
+        _moving = true;
+        _movementDuration = Vector3.Distance(_worldPosition, _nextWorldPosition) / movementSpeed;
         position = nextPosition;
         if (nextPosition.y * 2f - GameScript.Height + 1 == -19)
         {
             PlayerController.HealthDown();
             GameScript.RemoveEnemy(this.gameObject);
         }
-        transform.position = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
     }
 
     private float EvaluateMove(Vector2Int move)
@@ -142,5 +186,10 @@ public class EnemyScript : MonoBehaviour
     private static bool IsInBounds(int x, int y)
     {
         return x >= 0 && x < GameScript.Width && y >= 0 && y < GameScript.Height;
+    }
+    
+    private void OnMouseExit()
+    {
+        TileScript.ResetAllColors();
     }
 }
