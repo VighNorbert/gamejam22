@@ -30,7 +30,7 @@ public class GameScript : MonoBehaviour
     public GameObject supermanPrefab;
 
 
-    public static int phase = 1;
+    public static int phase = 2;
 
     void Start()
     {
@@ -58,16 +58,15 @@ public class GameScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (phase == 1)
         {
-            if (phase < 5)
+            currentLevel.GetCurrentWave().SpawnNextEnemies();
+            foreach (var enemy in enemiesAlive)
             {
-                phase += 1;
+                enemy.ChooseNextMove();
             }
-            else
-            {
-                phase = 1;
-            }
+
+            phase += 1;
         }
     }
 
@@ -81,15 +80,9 @@ public class GameScript : MonoBehaviour
         phase += 1;
         _pc.MarkFog();
         phase += 1;
+        
         // todo choose player movement and killing and stuff
+        // todo when complete set phase to 1
         phase = 1;
-        currentLevel.GetCurrentWave().SpawnNextEnemies();
-        foreach (var enemy in enemiesAlive)
-        {
-            enemy.ChooseNextMove();
-        }
-
-
-        phase += 1;
     }
 }
