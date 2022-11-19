@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     private bool _playerMoving = false;
     private int currPlayerMovementTile = 0;
 
+    public GameObject infoText;
+
     public PlayerController()
     {
         _angle = 0;
@@ -169,6 +171,8 @@ public class PlayerController : MonoBehaviour
 
                         currShape = null;
                         GameScript.Phase = 3;
+                        MarkInitFog();
+                        infoText.GetComponent<InfotextController>().UpdateInfoText("Enemies moving");
                         gs.MoveEnemies();
                     }
                 }
@@ -337,10 +341,13 @@ public class PlayerController : MonoBehaviour
 
     public void MarkFog()
     {
+
+        Debug.Log(_shapeToUse.Count);
         foreach (var shapePoint in _shapeToUse)
         {
             int y = _currTileCoords.y + shapePoint.y;
             int x = _currTileCoords.x + shapePoint.x;
+
             if (GameScript.Width <= x || GameScript.Height <= y || 0 > x || 0 > y)
             {
                 continue;
@@ -351,6 +358,20 @@ public class PlayerController : MonoBehaviour
         _shapeToUse.Clear();
         _angle = 0;
         HandleAngles();
+    }
+
+    public void MarkInitFog()
+    {
+        foreach (var shapePoint in _shapeToUse)
+        {
+            int y = _currTileCoords.y + shapePoint.y;
+            int x = _currTileCoords.x + shapePoint.x;
+            if (GameScript.Width <= x || GameScript.Height <= y || 0 > x || 0 > y)
+            {
+                continue;
+            }
+            GameScript.Tiles[y][x].GetComponent<TileScript>().SetInitFog();
+        }
     }
 
     private static bool InBounds(int x, int y)
