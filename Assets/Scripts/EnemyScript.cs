@@ -58,6 +58,19 @@ public class EnemyScript : MonoBehaviour
     {
         Vector2Int newPosition = position + move;
         
+        if (!IsInBounds(newPosition.x, newPosition.y))
+        {
+            return -2f;
+        }
+        if (GameScript.tiles[newPosition.y][newPosition.x].GetHasFog())
+        {
+            return 0f;
+        }
+        if (GameScript.tiles[newPosition.y][newPosition.x].hasEnemy)
+        {
+            return -1f;
+        }
+        
         float fogDistance = 99999f;
         int layer = 1;
         while (layer < fogDistance)

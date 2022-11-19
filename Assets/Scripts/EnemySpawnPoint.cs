@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class EnemySpawnPoint : MonoBehaviour
+public class EnemySpawnPoint
 {
-    public EnemyScript.EnemyType type;
+    public EnemyScript.EnemyType Type;
 
-    public int xCoord;
+    public int XCoord;
 }

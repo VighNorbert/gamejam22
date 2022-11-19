@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
     private GameObject[] currTiles;
     private Color color = Color.green;
     private int currShapeIndex = 0;
+
+    public GameScript gs;
+
     public int totalShapes;
     // Start is called before the first frame update
     void Start()
@@ -16,7 +19,6 @@ public class PlayerController : MonoBehaviour
         totalShapes = transform.Find("Shapes").transform.childCount; 
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -103,6 +105,8 @@ public class PlayerController : MonoBehaviour
 
 
                             }
+                            GameScript.phase = 3;
+                            gs.MoveEnemies();
                         }
 
                     }

@@ -111,15 +111,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fbbbf38aac5ee34b9594b4f73d5b91a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   randomness: 0
   personality: 0
+  position: {x: 0, y: 0}
   possibleMoves:
-  - {x: 1, y: 1}
-  - {x: 1, y: 0}
-  - {x: 1, y: -1}
-  - {x: 0, y: 1}
-  - {x: 0, y: -1}
-  - {x: -1, y: 1}
-  - {x: -1, y: 0}
-  - {x: -1, y: -1}
+  - {x: -2, y: 1}
+  - {x: -2, y: -1}
+  - {x: -1, y: 2}
+  - {x: -1, y: -2}
+  - {x: 1, y: 2}
+  - {x: 1, y: -2}
+  - {x: 2, y: 1}
+  - {x: 2, y: -1}
