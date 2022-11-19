@@ -28,6 +28,7 @@ public class GameScript : MonoBehaviour
     public GameObject rookPrefab;
     public GameObject bishopPrefab;
     public GameObject supermanPrefab;
+    public GameObject infoText;
 
     [Space(20)]
     public Camera mainCamera;
@@ -91,11 +92,13 @@ public class GameScript : MonoBehaviour
             }
             
             Phase += 1;
+            infoText.GetComponent<InfotextController>().UpdateInfoText("Choose shape and place it");
         }
 
         if (enemiesMoved == enemiesAlive.Count && Phase == 3)
         {
             Phase += 1;
+            infoText.GetComponent<InfotextController>().UpdateInfoText("Fog!");
             enemiesMoved = 0;
         }
 
@@ -103,6 +106,7 @@ public class GameScript : MonoBehaviour
         {
             pc.MarkFog();
             Phase += 1;
+            infoText.GetComponent<InfotextController>().UpdateInfoText("Choose where you want to go");
             TileScript.AgeAllFogTiles();
         }
 

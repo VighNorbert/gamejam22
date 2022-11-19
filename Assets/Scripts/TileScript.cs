@@ -19,6 +19,7 @@ public class TileScript : MonoBehaviour
     private Color _fogColor;
 
     public GameObject fog;
+    public GameObject initFog;
 
     [HideInInspector] 
     public GameObject enemy;
@@ -52,6 +53,12 @@ public class TileScript : MonoBehaviour
         _fogState = state;
         fog.SetActive(true);
     }
+
+    public void SetInitFog()
+    {
+        initFog.SetActive(true);
+    }
+
 
     public bool GetHasFog()
     {
@@ -87,6 +94,11 @@ public class TileScript : MonoBehaviour
     
     private void AgeTheFog()
     {
+        if (_fogState == 3)
+        {
+            initFog.SetActive(false);
+        }
+
         if (_fogState > 0)
         {
             if (_fogState != 1 || !hasPlayer)
