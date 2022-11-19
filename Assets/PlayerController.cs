@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
 
         for (int i=0; i<totalShapes; i++)
         {
-            transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().index = transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().transform.GetSiblingIndex()
+            transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().index = transform.Find("Shapes").transform.GetChild(i).GetComponent<ShapeController>().transform.GetSiblingIndex();
         }
     }
 }
