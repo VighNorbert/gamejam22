@@ -12,9 +12,8 @@ public class PlayerController : MonoBehaviour
     private Color color = Color.green;
     private int currShapeIndex = 0;
 
+    private List<Vector2Int> shapeToUse = new List<Vector2Int>();
 
-
-    private ShapeController scToUse;
     private Vector2Int currTileCoords;
     
     public GameScript gs;
@@ -39,7 +38,15 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            if (angle < 360)
+            {
+                angle = ((angle - 90) + 360) % 360;
+            }
+            else
+            {
+
             angle = (angle - 90) % 360;
+            }
             HandleAngles();
         }
         if (Input.GetKeyDown(KeyCode.E))
@@ -83,11 +90,27 @@ public class PlayerController : MonoBehaviour
                         hit.transform.GetComponent<Renderer>().material.color = Color.red;
                         for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
                         {
-                            int y = hit.transform.GetComponent<TileScript>().coords.y + currShape.GetComponent<ShapeController>().points[i].y;
-                            int x = hit.transform.GetComponent<TileScript>().coords.x + currShape.GetComponent<ShapeController>().points[i].x;
+                            int pointsY = currShape.GetComponent<ShapeController>().points[i].y;
+                            int pointsX = currShape.GetComponent<ShapeController>().points[i].x;
+
+                            if (swap)
+                            {
+                                int swap;
+                                swap = pointsX;
+                                pointsX = pointsY;
+                                pointsY = swap;
+                            }
+
+                            pointsX = xNegativeRotation * pointsX;
+                            pointsY = yNegativeRotation * pointsY;
+
+
+                            int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
+                            int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
+
                             if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
                             {
-                                break;
+                                contine;
                             }
                             if ((inBounds(y + 1, x) && GameScript.tiles[y + 1][x].GetHasFog()) ||
                                 (inBounds(y - 1, x) && GameScript.tiles[y - 1][x].GetHasFog()) ||
@@ -108,34 +131,47 @@ public class PlayerController : MonoBehaviour
                         
                         for (int i = 0; i < currShape.GetComponent<ShapeController>().points.Count; i++)
                         {
-                            
-                            int y = hit.transform.GetComponent<TileScript>().coords.y + currShape.GetComponent<ShapeController>().points[i].y;
-                            int x = hit.transform.GetComponent<TileScript>().coords.x + currShape.GetComponent<ShapeController>().points[i].x;
+
+
+                            int pointsY = currShape.GetComponent<ShapeController>().points[i].y;
+                            int pointsX = currShape.GetComponent<ShapeController>().points[i].x;
 
                             if (swap)
                             {
-                                SwapXY(x,y);
+                                int swap;
+                                swap = pointsX;
+                                pointsX = pointsY;
+                                pointsY = swap;
                             }
 
-                            x = xNegativeRotation * x;
-                            y = yNegativeRotation * y;
+                            pointsX = xNegativeRotation * pointsX;
+                            pointsY = yNegativeRotation * pointsY;
 
-                            swap = false;
+
+                            int y = hit.transform.GetComponent<TileScript>().coords.y + pointsY;
+                            int x = hit.transform.GetComponent<TileScript>().coords.x + pointsX;
+
 
                             if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
                             {
-                                break;
+                                continue;
                             }
                             GameScript.tiles[y][x].transform.GetComponent<Renderer>().material.color = color;
                             
+                            if (currShape.GetComponent<ShapeController>().points.Count > shapeToUse.Count)
+                            {
+
+                            shapeToUse.Add(new Vector2Int(pointsX, pointsY));
+                            }
 
                         }
+                        
                         if (Input.GetMouseButtonDown(0) && color == Color.green)
                         {
-                            scToUse = currShape.GetComponent<ShapeController>();
                             currTileCoords = new Vector2Int(hit.transform.GetComponent<TileScript>().coords.x, hit.transform.GetComponent<TileScript>().coords.y);
                             
                             SwapShape();
+                            
                             currShape = null;
                             GameScript.phase = 3;
                             gs.MoveEnemies();
@@ -150,16 +186,20 @@ public class PlayerController : MonoBehaviour
 
     public void MarkFog()
     {
-        for (int i = 0; i < scToUse.points.Count; i++)
+        Debug.Log(shapeToUse.Count);
+        for (int i = 0; i < shapeToUse.Count; i++)
         {
-            int y = currTileCoords.y + scToUse.points[i].y;
-            int x = currTileCoords.x + scToUse.points[i].x;
+            int y = currTileCoords.y + shapeToUse[i].y;
+            int x = currTileCoords.x + shapeToUse[i].x;
+            Debug.Log(shapeToUse[i].y);
+            Debug.Log(shapeToUse[i].x);
             if (GameScript.width <= x || GameScript.height <= y || 0 > x || 0 > y)
             {
-                break;
+                continue;
             }
             GameScript.tiles[y][x].GetComponent<TileScript>().SetFog(true);
         }
+        shapeToUse.Clear();
     }
 
     public bool inBounds(int x, int y)
@@ -183,25 +223,20 @@ public class PlayerController : MonoBehaviour
         ic.UpdateInventory();
     }
 
-    public void SwapXY(int x, int y)
-    {
-        int swap;
-        swap = x;
-        x = y;
-        y = swap;
-    }
 
     public void HandleAngles()
     {
+        shapeToUse.Clear();
         if (angle == 0)
         {
             xNegativeRotation = 1;
             yNegativeRotation = 1;
+            swap = false;
         }
         else if (angle == 90)
         {
-            xNegativeRotation = -1;
-            yNegativeRotation = 1;
+            xNegativeRotation = 1;
+            yNegativeRotation = -1;
             swap = true;
 
         }
@@ -209,11 +244,12 @@ public class PlayerController : MonoBehaviour
         {
             xNegativeRotation = -1;
             yNegativeRotation = -1;
+            swap = false;
         }
         else if (angle == 270)
         {
-            xNegativeRotation = 1;
-            yNegativeRotation = -1;
+            xNegativeRotation = -1;
+            yNegativeRotation = 1;
             swap = true;
         }
     }
