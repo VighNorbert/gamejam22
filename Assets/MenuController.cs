@@ -22,8 +22,18 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    public void PlayActualGame()
+    {
+        SceneManager.LoadScene(2);
+    }
+
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void ExitApp()
+    {
+        Application.Quit();
     }
 }
