@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class GameScript : MonoBehaviour
@@ -17,6 +18,7 @@ public class GameScript : MonoBehaviour
     public List<LevelScript> levels;
 
     private LevelScript _currentLevel;
+    private int _currentLevelIndex;
 
     public static List<EnemyScript> enemiesAlive = new List<EnemyScript>();
 
@@ -71,7 +73,7 @@ public class GameScript : MonoBehaviour
         pc.SpawnPlayer(10, 0);
         Tiles[0][10].SetFog(3);
         
-        _currentLevel = levels[0];
+        _currentLevel = levels[_currentLevelIndex];
         _currentLevel.StartFirstWave();
     }
 
@@ -91,7 +93,12 @@ public class GameScript : MonoBehaviour
                 if (!_currentLevel.StartNextWave())
                 {
                     Debug.Log("Level Complete");
-                    // TODO level is finished, do something
+                    _currentLevelIndex++;
+                    pc.RefillHealth();
+                    pc.ResetScore();
+                    pc.NewLevel();
+                    _currentLevel = levels[_currentLevelIndex];
+                    _currentLevel.StartFirstWave();
                 }
             }
             
@@ -110,9 +117,10 @@ public class GameScript : MonoBehaviour
         if (Phase == 4)
         {
             pc.MarkFog();
-            Phase += 1;
-            infoText.GetComponent<InfotextController>().UpdateInfoText("Choose where you want to go");
             TileScript.AgeAllFogTiles();
+            Phase += 1;
+            Tiles[PlayerController.PlayerTileCoords.y][PlayerController.PlayerTileCoords.x].hasPlayer = false;
+            infoText.GetComponent<InfotextController>().UpdateInfoText("Choose where you want to go");
         }
 
         HandleCamera();

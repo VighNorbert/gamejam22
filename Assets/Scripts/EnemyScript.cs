@@ -106,7 +106,7 @@ public class EnemyScript : MonoBehaviour
         
         // best move
         
-        float bestScore = 0f;
+        float bestScore = -100f;
         int bestMoveIndex = -1;
         
         foreach (var move in possibleMoves)

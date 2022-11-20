@@ -175,6 +175,7 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnPlayer(int x, int y)
     {
+        GameScript.Tiles[y][x].hasPlayer = true;
         transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0f, y * 2f - GameScript.Height + 1);
         PlayerTileCoords = new Vector2Int(x, y);
     }
@@ -244,6 +245,7 @@ public class PlayerController : MonoBehaviour
                             specialButton.GetComponent<Button>().interactable = false;
                             currShape = null;
                             _score -= 20;
+                            gs.ToggleInventory();
                             GameScript.Phase = 1;
                         }
                         else
@@ -278,7 +280,6 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePhaseFive()
     {
-        GameScript.Tiles[PlayerTileCoords.y][PlayerTileCoords.x].hasPlayer = false;
         Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
         int x = -1, y = -1;
         // Casts the ray and get the first game object hit
@@ -509,11 +510,25 @@ public class PlayerController : MonoBehaviour
         return _health;
     }
 
+    public void RefillHealth()
+    {
+        _health = 5;
+        for (int i = 0; i < 5; i++)
+        {
+            healthUI.transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
+
+    public void ResetScore()
+    {
+        _score = 0;
+    }
+
     public static void HealthDown()
     {
+        GameObject hp = healthUI.transform.GetChild(_health - 1).gameObject;
         _health -= 1;
-        GameObject hp = healthUI.transform.GetChild(healthUI.transform.childCount - 1).gameObject;
-        Destroy(hp);
+        hp.gameObject.SetActive(false);
 
         if (_health <= 0)
         {
@@ -571,15 +586,27 @@ public class PlayerController : MonoBehaviour
             var tile = GameScript.Tiles[y][x].GetComponent<TileScript>();
             if (tile.hasEnemy)
             {
-                Debug.Log("enemy found");
                 KillEnemy(tile);
             }
         }
-        Debug.Log(GameScript.enemiesAlive.Count);
     }
 
     public void clearShapeToUse()
     {
         _shapeToUse.Clear();
+    }
+
+    public void NewLevel()
+    {
+        for (int x = 0; x < GameScript.Width; x++)
+        {
+            for (int y = 0; y < GameScript.Height; y++)
+            {
+                GameScript.Tiles[y][x].SetFog(4);
+                GameScript.Tiles[y][x].hasPlayer = false;
+            }
+        }
+        SpawnPlayer(10, 0);
+        GameScript.Tiles[0][10].SetFog(3);
     }
 }
