@@ -84,7 +84,6 @@ public class WaveScript : MonoBehaviour
                 }
                 Debug.Log(esp.XCoord);
                 GameScript.Tiles[19][esp.XCoord].hasEnemy = true;
-                GameScript.Tiles[19][esp.XCoord].GetComponentInParent<Renderer>().material.color = Color.red;
                 GameObject enemy = Instantiate(prefab,
                     new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),
                     Quaternion.identity);
