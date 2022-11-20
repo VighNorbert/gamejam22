@@ -445,10 +445,10 @@ public class PlayerController : MonoBehaviour
             {
                 continue;
             }
-            if ((InBounds(y + 1, x) && GameScript.Tiles[y + 1][x].GetHasFog()) ||
-                (InBounds(y - 1, x) && GameScript.Tiles[y - 1][x].GetHasFog()) ||
-                (InBounds(y, x + 1) && GameScript.Tiles[y][x + 1].GetHasFog()) ||
-                (InBounds(y, x - 1) && GameScript.Tiles[y][x - 1].GetHasFog()))
+            if ((InBounds(PlayerTileCoords.x, PlayerTileCoords.y - 1) && y == PlayerTileCoords.y - 1 && x == PlayerTileCoords.x) ||
+                (InBounds(PlayerTileCoords.x, PlayerTileCoords.y + 1) && y == PlayerTileCoords.y + 1 && x == PlayerTileCoords.x) ||
+                (InBounds(PlayerTileCoords.x - 1, PlayerTileCoords.y) && y == PlayerTileCoords.y && x == PlayerTileCoords.x - 1) ||
+                (InBounds(PlayerTileCoords.x + 1, PlayerTileCoords.y) && y == PlayerTileCoords.y && x == PlayerTileCoords.x + 1))
             {
                 _color = Color.green;
                 return true;
