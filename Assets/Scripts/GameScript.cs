@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameScript : MonoBehaviour
 {
@@ -47,6 +48,8 @@ public class GameScript : MonoBehaviour
     private static float MovementSpeed = 30f;
     private static float ScrollingSpeed = 500f;
 
+    public GameObject inventory;
+
     [HideInInspector]
     public int enemiesMoved = 0;
     
@@ -93,6 +96,7 @@ public class GameScript : MonoBehaviour
             }
             
             Phase += 1;
+            ToggleInventory();
             infoText.GetComponent<InfotextController>().UpdateInfoText("Choose shape and place it");
         }
 
@@ -153,5 +157,14 @@ public class GameScript : MonoBehaviour
             Destroy(enemy);
         }
         enemiesToBeRemoved.Clear();
+    }
+
+    public void ToggleInventory()
+    {
+        for (int i = 0; i < inventory.transform.childCount; i++)
+        {
+            inventory.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = 
+                !inventory.transform.GetChild(i).gameObject.GetComponent<Button>().interactable;
+        }
     }
 }

@@ -102,36 +102,21 @@ public class PlayerController : MonoBehaviour
         _animator.SetFloat("runSpeed", 0f);
         if (_playerMoving)
         {
-            Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
-            Vector3 nextWorldPosition =
-                new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0f,
-                    _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
-            transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
-            float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
-            Debug.Log(speed);
-            
-            _animator.SetFloat("runSpeed", speed / 10f);
-
-            if (_timeElapsed < _movementDuration)
-            {
-                transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
-                _timeElapsed += Time.deltaTime;
-            }
-
-            else if (_pathToTake.Count == 1)
+            if (_pathToTake.Count == 1)
             {
                 _playerMoving = false;
                 _pathToTake.Clear(); 
             }
             else
             {
-                worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
-                nextWorldPosition =
-                    new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
+                Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
+                Vector3 nextWorldPosition =
+                    new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0f,
                         _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
                 transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
-                speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
-
+                float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
+                Debug.Log(speed);
+                
                 _animator.SetFloat("runSpeed", speed / 10f);
 
                 if (_timeElapsed < _movementDuration)
@@ -139,19 +124,37 @@ public class PlayerController : MonoBehaviour
                     transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
                     _timeElapsed += Time.deltaTime;
                 }
+                
                 else
                 {
-                    worldPosition = nextWorldPosition;
-                    transform.position = worldPosition;
-                    _timeElapsed = 0f;
-                    _currPlayerMovementTile++;
-                    if (_currPlayerMovementTile == _pathToTake.Count-1)
+                    worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
+                    nextWorldPosition =
+                        new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
+                            _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
+                    transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
+                    speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
+
+                    _animator.SetFloat("runSpeed", speed / 10f);
+
+                    if (_timeElapsed < _movementDuration)
                     {
-                        _playerMoving = false;
-                        _pathToTake.Clear();
-                        _currPlayerMovementTile = 0;
+                        transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
+                        _timeElapsed += Time.deltaTime;
                     }
-                }   
+                    else
+                    {
+                        worldPosition = nextWorldPosition;
+                        transform.position = worldPosition;
+                        _timeElapsed = 0f;
+                        _currPlayerMovementTile++;
+                        if (_currPlayerMovementTile == _pathToTake.Count-1)
+                        {
+                            _playerMoving = false;
+                            _pathToTake.Clear();
+                            _currPlayerMovementTile = 0;
+                        }
+                    }   
+                }
             }
         }
     }
@@ -227,6 +230,7 @@ public class PlayerController : MonoBehaviour
                             SwapShape();
 
                             currShape = null;
+                            gs.ToggleInventory();
                             GameScript.Phase = 3;
                             MarkInitFog();
                             infoText.GetComponent<InfotextController>().UpdateInfoText("Enemies moving");
@@ -237,6 +241,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (hit.transform.CompareTag("Enemy"))
             {
+                Debug.Log("here");
                 List<Vector2Int> enemyPossibleMoves = hit.transform.GetComponent<EnemyScript>().possibleMoves;
                 foreach (var possibleMove in enemyPossibleMoves)
                 {

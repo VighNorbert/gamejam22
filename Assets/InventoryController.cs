@@ -19,7 +19,6 @@ public class InventoryController : MonoBehaviour
         pc.currShape = player.transform.Find("Shapes").transform.GetChild(shape).gameObject;
         pc.SetHasSpecialAbility(false);
         pc.clearShapeToUse();
-        
     }
 
 
