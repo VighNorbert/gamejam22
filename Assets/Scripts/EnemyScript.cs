@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -37,6 +38,8 @@ public class EnemyScript : MonoBehaviour
 
     private Animator _animator;
 
+    private float ttl = 0f;
+
     void Start()
     {
         randomness = Random.Range(0f, 0.1f);
@@ -47,6 +50,7 @@ public class EnemyScript : MonoBehaviour
 
     void Update()
     {
+        ttl += Time.deltaTime;
         _animator.SetFloat("runSpeed", 0f);
         if (_moving)
         {
@@ -203,5 +207,26 @@ public class EnemyScript : MonoBehaviour
     private void OnMouseExit()
     {
         TileScript.ResetAllColors();
+    }
+
+    public void Kill()
+    {
+        _animator.SetTrigger("death");
+        Debug.Log("Enemy killed");
+        ttl = 0f;
+
+        StartCoroutine(KillTimer());
+
+    }
+
+    IEnumerator KillTimer()
+    {
+       
+        while(ttl < 5f)
+        {
+            yield return null;
+        }
+
+        Destroy(gameObject);
     }
 }

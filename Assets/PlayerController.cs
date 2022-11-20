@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
     public GameObject vidmo;
     public float dVidmoStarted;
     
+    private bool attacking = false;
+    private bool enemyNotDead = false;
     
     public PlayerController()
     {
@@ -139,51 +141,76 @@ public class PlayerController : MonoBehaviour
 
             else
             {
-                Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
+                Vector2Int c1 = _pathToTake[_pathToTake.Count - 1];
+                if (_pathToTake.Count == 2 && _currPlayerMovementTile == 0 && GameScript.Tiles[c1.y][c1.x].hasEnemy && !attacking)
+                {
+                    attacking = true;
+                    enemyNotDead = true;
+                    Debug.Log("attacking2");
+                    _animator.SetTrigger("attack");
+                    _timeElapsed = 0f;
+                }
+                
+                Vector3 worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
                 Vector3 nextWorldPosition =
                     new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0f,
                         _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
                 transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
                 float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
 
-                _animator.SetFloat("runSpeed", speed / 10f);
 
-                if (_timeElapsed < _movementDuration)
+                if (attacking && _timeElapsed >= 1f && enemyNotDead)
                 {
+                    Vector2Int c = _pathToTake[_pathToTake.Count - 1];
+                    TileScript tile = GameScript.Tiles[c.y][c.x];
+                    if (tile.hasEnemy)
+                    {
+                        KillEnemy(tile);
+                    }
+                    enemyNotDead = false;
+                }
+                
+                if (attacking && _timeElapsed >= 2f)
+                {
+                    Debug.Log("attack done");
+                    _animator.SetFloat("runSpeed", 0);
+                    attacking = false;
+                    _timeElapsed = 0f;
+                    
+                } else if (attacking)
+                {
+                    _timeElapsed += Time.deltaTime;
+                }
+                
+                if (_timeElapsed < _movementDuration && !attacking)
+                {
+                    _animator.SetFloat("runSpeed", speed / 10f);
                     transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
                     _timeElapsed += Time.deltaTime;
                 }
                 
-                else
+                else if (!attacking)
                 {
-                    worldPosition = new Vector3(_pathToTake[_currPlayerMovementTile].x * 2f - GameScript.Width + 1, 0.5f, _pathToTake[_currPlayerMovementTile].y * 2f - GameScript.Height + 1);
-                    nextWorldPosition =
-                        new Vector3(_pathToTake[_currPlayerMovementTile + 1].x * 2f - GameScript.Width + 1, 0.5f,
-                            _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
-                    transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
-                    speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
-
                     _animator.SetFloat("runSpeed", speed / 10f);
-
-                    if (_timeElapsed < _movementDuration)
+                    Vector2Int c = _pathToTake[_pathToTake.Count - 1];
+                    if (_currPlayerMovementTile == _pathToTake.Count - 3 && GameScript.Tiles[c.y][c.x].hasEnemy)
                     {
-                        transform.position = Vector3.Lerp(worldPosition, nextWorldPosition, _timeElapsed / _movementDuration);
-                        _timeElapsed += Time.deltaTime;
+                        attacking = true;
+                        enemyNotDead = true;
+                        Debug.Log("attacking");
+                        _animator.SetTrigger("attack");
                     }
-                    else
+                    worldPosition = nextWorldPosition;
+                    transform.position = worldPosition;
+                    _timeElapsed = 0f;
+                    _currPlayerMovementTile++;
+                    if (_currPlayerMovementTile == _pathToTake.Count-1)
                     {
-                        worldPosition = nextWorldPosition;
-                        transform.position = worldPosition;
-                        _timeElapsed = 0f;
-                        _currPlayerMovementTile++;
-                        if (_currPlayerMovementTile == _pathToTake.Count-1)
-                        {
-                            _playerMoving = false;
-                            _pathToTake.Clear();
-                            _currPlayerMovementTile = 0;
-                            GameScript.Phase = 1;
-                        }
-                    }   
+                        _playerMoving = false;
+                        _pathToTake.Clear();
+                        _currPlayerMovementTile = 0;
+                        GameScript.Phase = 1;
+                    }
                 }
             }
         }
@@ -375,14 +402,9 @@ public class PlayerController : MonoBehaviour
             }
 
             _playerMoving = true;
-            transform.position = new Vector3(x * 2f - GameScript.Width + 1, 0f, y * 2f - GameScript.Height + 1);
             var tile = GameScript.Tiles[y][x];
             tile.hasPlayer = true;
             PlayerTileCoords = new Vector2Int(x, y);
-            if (tile.hasEnemy)
-            {
-                KillEnemy(tile);
-            }
         }
     }
 
@@ -580,9 +602,11 @@ public class PlayerController : MonoBehaviour
     {
         tile.hasDeadEnemy = true;
         tile.hasEnemy = false;
-        GameScript.enemiesAlive.Remove(tile.enemy.GetComponent<EnemyScript>());
+        EnemyScript es = tile.enemy.GetComponent<EnemyScript>();
+        es.Kill();
+        GameScript.enemiesAlive.Remove(es);
         IncreaseScore(tile.enemy.GetComponent<EnemyScript>().type);
-        Destroy(tile.enemy);
+        // Destroy(tile.enemy);
         tile.enemy = null;
     }
 
