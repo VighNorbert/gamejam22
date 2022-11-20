@@ -21,6 +21,8 @@ public class TileScript : MonoBehaviour
     public GameObject fog;
     public GameObject initFog;
 
+    private ParticleSystem _ps;
+
     [HideInInspector] 
     public GameObject enemy;
 
@@ -52,6 +54,17 @@ public class TileScript : MonoBehaviour
     {
         _fogState = state;
         fog.SetActive(true);
+        
+        // _renderer = GetComponent<Renderer>();
+        // _renderer.material.color = new Color(1, 1, 1, _fogState * .5f);
+        _fogColor = new Color(1, 1, 1, 1f);
+        fog.transform.GetComponent<Renderer>().material.color = _fogColor;
+
+        // _ps = fog.GetComponent<ParticleSystem>();
+        // var m = _ps.main;
+        // m.startColor = new Color(1, 1, 1, .5f);
+        // var e = _ps.emission;
+        // e.rateOverTime = 20;
     }
 
     public void SetInitFog()
@@ -89,7 +102,7 @@ public class TileScript : MonoBehaviour
 
     private void ResetFogColor()
     {
-        fog.GetComponent<Renderer>().material.color = Color.white;
+        fog.GetComponent<Renderer>().material.color = _fogColor;
     }
     
     private void AgeTheFog()
@@ -110,6 +123,12 @@ public class TileScript : MonoBehaviour
             {
                 fog.SetActive(false);
             }
+            else if (_fogState <= 2)
+            {
+                _fogColor = new Color(1, 1, 1, _fogState * .25f);
+                fog.transform.GetComponent<Renderer>().material.color = _fogColor;
+            }
+
         }
     }
     

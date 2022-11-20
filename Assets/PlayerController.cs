@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
@@ -53,6 +51,10 @@ public class PlayerController : MonoBehaviour
 
     public GameObject specialButton;
 
+    public GameObject vidmo;
+    public float dVidmoStarted;
+    
+    
     public PlayerController()
     {
         _angle = 0;
@@ -68,8 +70,22 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        specialButton.transform.GetChild(0).transform.GetComponent<TextMeshProUGUI>().text = _score.ToString();
+        specialButton.transform.GetChild(0).transform.GetComponent<TextMeshProUGUI>().text = _score + "/20";
 
+        if (vidmo.activeSelf)
+        {
+            dVidmoStarted += Time.deltaTime;
+            if (dVidmoStarted >= 1.5f)
+            {
+                var e = vidmo.GetComponent<ParticleSystem>().emission;
+                e.enabled = false;
+            }
+            if (dVidmoStarted >= 5f)
+            {
+                vidmo.SetActive(false);
+                dVidmoStarted = 0;
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -572,6 +588,11 @@ public class PlayerController : MonoBehaviour
 
     private void KillThemAll()
     {
+        vidmo.SetActive(true);
+        dVidmoStarted = 0;
+        vidmo.transform.position = new Vector3(_currTileCoords.x * 2f - GameScript.Width + 1, 0.5f, _currTileCoords.y * 2f - GameScript.Height + 1);
+        var e = vidmo.GetComponent<ParticleSystem>().emission;
+        e.enabled = true;
         foreach (var shapePoint in _shapeToUse)
         {
             int y = _currTileCoords.y + shapePoint.y;
