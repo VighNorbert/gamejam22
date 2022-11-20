@@ -39,8 +39,8 @@ public class EnemyScript : MonoBehaviour
 
     void Start()
     {
-        randomness = Random.Range(0f, 0.3f);
-        personality = Random.Range(0f, 1f);
+        randomness = Random.Range(0f, 0.1f);
+        personality = Random.Range(0.3f, 1f);
 
         _animator = GetComponentInChildren<Animator>();
     }

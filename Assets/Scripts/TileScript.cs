@@ -94,7 +94,7 @@ public class TileScript : MonoBehaviour
     
     private void AgeTheFog()
     {
-        if (_fogState == 4)
+        if (_fogState == 3)
         {
             initFog.SetActive(false);
         }

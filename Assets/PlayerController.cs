@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -39,12 +41,17 @@ public class PlayerController : MonoBehaviour
     private bool _playerMoving = false;
     private int _currPlayerMovementTile = 0;
     
-    private int _score = 0;
+    private int _score = 23;
     private bool _hasSpecialAbility = false;
 
     public GameObject infoText;
 
     private Animator _animator;
+
+    public static GameObject gameOverUI;
+    public GameObject gameOverUINonPublic;
+
+    public GameObject specialButton;
 
     public PlayerController()
     {
@@ -53,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        gameOverUI = gameOverUINonPublic;
         healthUI = _healthUI;
         totalShapes = transform.Find("Shapes").transform.childCount;
         _animator = GetComponentInChildren<Animator>();
@@ -60,6 +68,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        specialButton.transform.GetChild(0).transform.GetComponent<TextMeshProUGUI>().text = _score.ToString();
+
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             _angle = (_angle + 270) % 360;
@@ -85,10 +96,10 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+       /* if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             ChooseSpecialAbility();
-        }
+        }*/
         
         if (GameScript.Phase == 2)
         {
@@ -108,7 +119,7 @@ public class PlayerController : MonoBehaviour
                     _pathToTake[_currPlayerMovementTile + 1].y * 2f - GameScript.Height + 1);
             transform.rotation = Quaternion.LookRotation(nextWorldPosition - worldPosition);
             float speed = Vector3.Distance(worldPosition, nextWorldPosition) / _movementDuration;
-            Debug.Log(speed);
+            //Debug.Log(speed);
             
             _animator.SetFloat("runSpeed", speed / 10f);
 
@@ -164,6 +175,10 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePhaseTwo()
     {
+        if (_score >= 20)
+        {
+            specialButton.GetComponent<Button>().interactable = true;
+        }
         Ray ray = Camera.main!.ScreenPointToRay(Input.mousePosition);
         // Casts the ray and get the first game object hit
         Physics.Raycast(ray, out var hit);
@@ -220,6 +235,9 @@ public class PlayerController : MonoBehaviour
                         if (_hasSpecialAbility)
                         {
                             KillThemAll();
+                            specialButton.GetComponent<Button>().interactable = false;
+                            currShape = null;
+                            _score -= 20;
                             GameScript.Phase = 1;
                         }
                         else
@@ -492,7 +510,7 @@ public class PlayerController : MonoBehaviour
 
         if (_health <= 0)
         {
-            Debug.Log("Game Over");
+            gameOverUI.SetActive(true);
         }
     }
 
@@ -509,9 +527,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ChooseSpecialAbility()
+    public void ChooseSpecialAbility()
     {
-        currShape = transform.Find("Shapes").Find("Special").gameObject;
+        currShape = transform.Find("Special").Find("Special").gameObject;
         _hasSpecialAbility = true;
     }
 

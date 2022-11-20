@@ -302,6 +302,7 @@ GameObject:
   m_Component:
   - component: {fileID: 927807175}
   - component: {fileID: 927807174}
+  - component: {fileID: 927807176}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -386,6 +387,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &927807176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927807173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &1075410453
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,6 +418,7 @@ GameObject:
   - component: {fileID: 1075410454}
   - component: {fileID: 1075410456}
   - component: {fileID: 1075410455}
+  - component: {fileID: 1075410457}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -445,7 +467,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ea1008a2c2ccce149993e0b3248e31a7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -463,6 +485,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1075410453}
   m_CullTransparentMesh: 1
+--- !u!114 &1075410457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075410453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20609c403d1d8fd4baeca55165f91044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1280165952 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3610950270131977204, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
@@ -646,6 +680,34 @@ PrefabInstance:
     - target: {fileID: 3610950270131977204, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1075410457}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610950270131977207, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4ecdcaa1796dd44c959408b4ae9d738, type: 3}
