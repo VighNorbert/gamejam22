@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
@@ -39,7 +40,7 @@ public class PlayerController : MonoBehaviour
     private bool _playerMoving = false;
     private int _currPlayerMovementTile = 0;
     
-    private int _score = 23;
+    private int _score = 0;
     private bool _hasSpecialAbility = false;
 
     public GameObject infoText;
@@ -57,13 +58,13 @@ public class PlayerController : MonoBehaviour
     private bool attacking = false;
     private bool enemyNotDead = false;
     
-    public PlayerController()
-    {
-        _angle = 0;
-    }
-
     void Start()
     {
+        _angle = 0;
+        if (SceneManager.GetActiveScene().name == "TutorialScene")
+        {
+            _score = 23;
+        }
         gameOverUI = gameOverUINonPublic;
         healthUI = _healthUI;
         totalShapes = transform.Find("Shapes").transform.childCount;
@@ -647,7 +648,7 @@ public class PlayerController : MonoBehaviour
         {
             for (int y = 0; y < GameScript.Height; y++)
             {
-                GameScript.Tiles[y][x].SetFog(4);
+                GameScript.Tiles[y][x].SetFog(0);
                 GameScript.Tiles[y][x].hasPlayer = false;
             }
         }

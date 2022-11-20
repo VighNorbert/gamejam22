@@ -11,8 +11,7 @@ public class InfotextController : MonoBehaviour
     {
         if (transform.GetChild(0).transform.GetComponent<TextMeshProUGUI>().alpha > 0)
         {
-        transform.GetChild(0).transform.GetComponent<TextMeshProUGUI>().alpha -= Time.deltaTime * 0.2f;
-
+            transform.GetChild(0).transform.GetComponent<TextMeshProUGUI>().alpha -= Time.deltaTime * 0.2f;
         }
     }
 

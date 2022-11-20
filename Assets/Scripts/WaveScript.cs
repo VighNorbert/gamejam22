@@ -82,7 +82,6 @@ public class WaveScript : MonoBehaviour
                     case EnemyScript.EnemyType.Superman: prefab = gs.supermanPrefab; break;
                     default: prefab = gs.kingPrefab; break;
                 }
-                Debug.Log(esp.XCoord);
                 GameScript.Tiles[19][esp.XCoord].hasEnemy = true;
                 GameObject enemy = Instantiate(prefab,
                     new Vector3(esp.XCoord * 2 - GameScript.Width + 1, 0.5f, GameScript.Height - 1),

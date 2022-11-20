@@ -53,18 +53,17 @@ public class TileScript : MonoBehaviour
     public void SetFog(int state = 4)
     {
         _fogState = state;
-        fog.SetActive(true);
-        
-        // _renderer = GetComponent<Renderer>();
-        // _renderer.material.color = new Color(1, 1, 1, _fogState * .5f);
-        _fogColor = new Color(1, 1, 1, 1f);
-        fog.transform.GetComponent<Renderer>().material.color = _fogColor;
-
-        // _ps = fog.GetComponent<ParticleSystem>();
-        // var m = _ps.main;
-        // m.startColor = new Color(1, 1, 1, .5f);
-        // var e = _ps.emission;
-        // e.rateOverTime = 20;
+        if (state > 0) {
+            fog.SetActive(true);
+            
+            _fogColor = new Color(1, 1, 1, 1f);
+            fog.transform.GetComponent<Renderer>().material.color = _fogColor;
+        }
+        else
+        {
+            fog.SetActive(false);
+            initFog.SetActive(false);
+        }
     }
 
     public void SetInitFog()

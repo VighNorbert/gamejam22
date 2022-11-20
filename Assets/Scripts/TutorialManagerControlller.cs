@@ -52,8 +52,8 @@ public class TutorialManagerControlller : MonoBehaviour
 
         if (step == 1)
         {
-            infoText.GetComponent<TextMeshProUGUI>().text = "Press W or S to control camera.\n" +
-                "And scroll with mouse to zoom\n" +
+            infoText.GetComponent<TextMeshProUGUI>().text = "Press W, S, A or D to control the camera.\n" +
+                "Scroll with the mouse wheel to zoom.\n" +
                 "Use Q and E to rotate the shape." +
               "";
             if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
@@ -65,7 +65,7 @@ public class TutorialManagerControlller : MonoBehaviour
 
         if (iny_step == 1) {
             infoText.GetComponent<TextMeshProUGUI>().text = "Click on a tile to cast fog.\n" +
-                    "You can only cast fog if it is connected to an already existing fog.";
+                    "You can only cast fog if it is directly connected to the player's tile.";
             if (player.GetComponent<PlayerController>().currShape == null)
             {
                 iny_step1 = 1;

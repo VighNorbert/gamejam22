@@ -29,5 +29,9 @@ public class LevelScript : MonoBehaviour
     {
         return waves[_currentWave];
     }
+    public int GetCurrentWaveIndex()
+    {
+        return _currentWave;
+    }
     
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -54,6 +55,8 @@ public class GameScript : MonoBehaviour
 
     [HideInInspector]
     public int enemiesMoved = 0;
+
+    public TMPro.TextMeshProUGUI levelText;
     
     void Start()
     {
@@ -75,6 +78,19 @@ public class GameScript : MonoBehaviour
         
         _currentLevel = levels[_currentLevelIndex];
         _currentLevel.StartFirstWave();
+        if (levelText != null)
+        {
+            levelText.fontSize = 56;
+            levelText.text = "Level " + (_currentLevelIndex + 1);
+            levelText.gameObject.SetActive(true);
+            StartCoroutine(DisableLevelText());
+        }
+    }
+
+    private IEnumerator DisableLevelText()
+    {
+        yield return new WaitForSeconds(2f);
+        levelText.gameObject.SetActive(false);
     }
 
     void Update()
@@ -99,6 +115,20 @@ public class GameScript : MonoBehaviour
                     pc.NewLevel();
                     _currentLevel = levels[_currentLevelIndex];
                     _currentLevel.StartFirstWave();
+                    if (levelText != null)
+                    {
+                        levelText.fontSize = 56;
+                        levelText.text = "Level " + (_currentLevelIndex + 1);
+                        levelText.gameObject.SetActive(true);
+                        StartCoroutine(DisableLevelText());
+                    }
+                }
+                else if (levelText != null)
+                {
+                    levelText.fontSize = 36;
+                    levelText.text = "Wave " + (_currentLevel.GetCurrentWaveIndex() + 1);
+                    levelText.gameObject.SetActive(true);
+                    StartCoroutine(DisableLevelText());
                 }
             }
             
