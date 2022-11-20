@@ -27,7 +27,7 @@ public class TutorialManagerControlller : MonoBehaviour
         infoText.GetComponent<TextMeshProUGUI>().text = "Story\n" +
             "You play as Elkrond, the spirit of the " +
             "forest who protects it.\n" +
-            "He can control fog\n" +
+            "He can control the fog\n" +
             "which he uses to trap and kill enemies.\n" +
             "He can travel only via fog.";
     }
@@ -41,7 +41,7 @@ public class TutorialManagerControlller : MonoBehaviour
             infoText.GetComponent<TextMeshProUGUI>().text = "Inventory\n" +
               "You can choose various shapes of fog\n" +
               "to cast from your inventory.\n" +
-              "Hover and click above the tiles on the right.";
+              "Hover and click on the tiles on the right.";
             if (player.GetComponent<PlayerController>().currShape != null)
             {
                 step = 1;

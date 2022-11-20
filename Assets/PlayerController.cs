@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
             HandleAngles();
         }
 
-
+/*
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             currShape = transform.Find("Shapes").transform.GetChild(_currShapeIndex).gameObject;
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
             {
                 _currShapeIndex = 0;
             }
-        }
+        }*/
 
        /* if (Input.GetKeyDown(KeyCode.Alpha2))
         {

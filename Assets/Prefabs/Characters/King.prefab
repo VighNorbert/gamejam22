@@ -234,6 +234,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1682190906258477464}
   - component: {fileID: 6439759476203420418}
+  - component: {fileID: -8751093886558688681}
   m_Layer: 0
   m_Name: King
   m_TagString: Enemy
@@ -286,6 +287,19 @@ MonoBehaviour:
   - {x: -1, y: -1}
   gs: {fileID: 0}
   movementSpeed: 3
+--- !u!65 &-8751093886558688681
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023109211568573218}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2117614545927455831
 GameObject:
   m_ObjectHideFlags: 0
