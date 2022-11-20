@@ -908,6 +908,7 @@ MonoBehaviour:
   minHorizontal: -15
   maxVertical: 19
   minVertical: -18
+  inventory: {fileID: 1046476237}
   enemiesMoved: 0
 --- !u!4 &271571415
 Transform:
@@ -1947,11 +1948,11 @@ PrefabInstance:
       objectReference: {fileID: 271571414}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: kingCount
-      value: 7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: rowsCount
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: knightCount
@@ -3618,11 +3619,11 @@ PrefabInstance:
       objectReference: {fileID: 271571414}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: kingCount
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: rowsCount
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: knightCount
@@ -6154,27 +6155,27 @@ PrefabInstance:
       objectReference: {fileID: 271571414}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: kingCount
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: rookCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: rowsCount
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: bishopCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: knightCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2773526204719052658, guid: 163277aea359efa409b002c89b23ff90, type: 3}
       propertyPath: supermanCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 163277aea359efa409b002c89b23ff90, type: 3}
