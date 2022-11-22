@@ -36,16 +36,17 @@ public class TileScript : MonoBehaviour
 
     public void SetCoords(int x, int z)
     {
+        
         if ((x + z) % 2 == 0)
         {
-            _basicColor = new Color {r = 0f, g = 0.4f, b = 0f};
+            _basicColor = new Color(47f/255f, 70f/255f, 24f/255f, 255f/255f);
         }
         else
         {
-            _basicColor = new Color {r = 0f, g = 0.5f, b = 0f};
+            _basicColor = new Color(98f/255f, 130f/255f, 60f/255f, 255f/255f);
         }
         _renderer = GetComponent<Renderer>();
-        _renderer.material.color = _basicColor;
+        _renderer.material.SetColor("_BaseColor", _basicColor);
         
         coords = new Vector2Int(x, z);
     }

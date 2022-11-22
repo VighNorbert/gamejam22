@@ -57,9 +57,12 @@ public class GameScript : MonoBehaviour
     public int enemiesMoved = 0;
 
     public TMPro.TextMeshProUGUI levelText;
+
+    public GameObject winScreen;
     
     void Start()
     {
+        Phase = 2;
         Tiles = new List<List<TileScript>>();
         for (int z = 0; z < Height; z++)
         {
@@ -110,17 +113,29 @@ public class GameScript : MonoBehaviour
                 {
                     Debug.Log("Level Complete");
                     _currentLevelIndex++;
-                    pc.RefillHealth();
-                    pc.ResetScore();
-                    pc.NewLevel();
-                    _currentLevel = levels[_currentLevelIndex];
-                    _currentLevel.StartFirstWave();
-                    if (levelText != null)
+                    if (_currentLevelIndex == levels.Count)
                     {
-                        levelText.fontSize = 56;
-                        levelText.text = "Level " + (_currentLevelIndex + 1);
-                        levelText.gameObject.SetActive(true);
-                        StartCoroutine(DisableLevelText());
+                        if (winScreen)
+                        {
+                            winScreen.SetActive(true);
+                        }
+                        Phase = 6;
+                    }
+                    else
+                    {
+                        pc.RefillHealth();
+                        pc.ResetScore();
+                        pc.NewLevel();
+                        _currentLevel = levels[_currentLevelIndex];
+                        _currentLevel.StartFirstWave();
+
+                        if (levelText != null)
+                        {
+                            levelText.fontSize = 56;
+                            levelText.text = "Level " + (_currentLevelIndex + 1);
+                            levelText.gameObject.SetActive(true);
+                            StartCoroutine(DisableLevelText());
+                        }
                     }
                 }
                 else if (levelText != null)
