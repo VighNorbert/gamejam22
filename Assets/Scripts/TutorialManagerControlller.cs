@@ -12,6 +12,9 @@ public class TutorialManagerControlller : MonoBehaviour
     public GameObject buttonStart;
     public GameObject buttonEnemies;
     public GameObject buttonPlay;
+    public GameObject inventory;
+    public GameObject special;
+    public GameObject infoDiff;
 
     private int i = 0;
     private int on = 0;
@@ -37,6 +40,7 @@ public class TutorialManagerControlller : MonoBehaviour
     {
         if (on == 1)
         {
+            inventory.SetActive(true);
             buttonStart.SetActive(false);
             infoText.GetComponent<TextMeshProUGUI>().text = "Inventory\n" +
               "You can choose various shapes of fog\n" +
@@ -101,6 +105,7 @@ public class TutorialManagerControlller : MonoBehaviour
                     "You can see possible moves of an enemy by hovering over them.\n" +
                     "Now, try to kill an enemy.\n" +
         "";
+                infoDiff.SetActive(true);
                 iny_step3 = 1;
                 iny_step2 = 0;
                 
@@ -111,6 +116,7 @@ public class TutorialManagerControlller : MonoBehaviour
         {
             if (GameObject.FindGameObjectsWithTag("Enemy").Length == 1)
             {
+                special.SetActive(true);
                 buttSpecial.GetComponent<Button>().interactable = true;
                 infoText.GetComponent<TextMeshProUGUI>().text = "Kill enemies to collect points\n" +
                     "for a special ability \"vidmo\"\n" +

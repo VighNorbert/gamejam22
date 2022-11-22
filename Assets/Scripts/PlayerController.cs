@@ -308,7 +308,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (hit.transform.CompareTag("Enemy"))
             {
-                Debug.Log("here");
+                //Debug.Log("here");
                 List<Vector2Int> enemyPossibleMoves = hit.transform.GetComponent<EnemyScript>().possibleMoves;
                 foreach (var possibleMove in enemyPossibleMoves)
                 {
@@ -622,7 +622,7 @@ public class PlayerController : MonoBehaviour
         {
             int y = _currTileCoords.y + shapePoint.y;
             int x = _currTileCoords.x + shapePoint.x;
-            Debug.Log(x + " " + y);
+            //Debug.Log(x + " " + y);
 
             if (GameScript.Width <= x || GameScript.Height <= y || 0 > x || 0 > y)
             {
