@@ -136,8 +136,8 @@ public class EnemyScript : MonoBehaviour
         GameScript.Tiles[position.y][position.x].enemy = null;
         GameScript.Tiles[nextPosition.y][nextPosition.x].enemy = gameObject;
         GameScript.Tiles[nextPosition.y][nextPosition.x].hasEnemy = true;
-        _worldPosition = new Vector3(position.x * 2f - GameScript.Width + 1, 0.5f, position.y * 2f - GameScript.Height + 1);
-        _nextWorldPosition = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0.5f, nextPosition.y * 2f - GameScript.Height + 1);
+        _worldPosition = new Vector3(position.x * 2f - GameScript.Width + 1, 0f, position.y * 2f - GameScript.Height + 1);
+        _nextWorldPosition = new Vector3(nextPosition.x * 2f - GameScript.Width + 1, 0f, nextPosition.y * 2f - GameScript.Height + 1);
 
         _moving = true;
         _movementDuration = Vector3.Distance(_worldPosition, _nextWorldPosition) / movementSpeed;
